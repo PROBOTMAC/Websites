@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockWise — Learn Stock Fundamentals</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ====================== CSS VARIABLES & THEME ====================== */
+:root {
+  --bg-primary: #F5F7FA;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #EDF3FB;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+  --bg-code: #EFF6FF;
+  --text-primary: #1A1F2E;
+  --text-secondary: #4A5568;
+  --text-muted: #718096;
+  --accent-blue: #3B82F6;
+  --accent-light: #BEE3F8;
+  --accent-hover: #2563EB;
+  --border: #E2E8F0;
+  --border-accent: #BEE3F8;
+  --shadow: 0 2px 16px rgba(59,130,246,0.08);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.06);
+  --callout-bg: #EFF6FF;
+  --callout-border: #93C5FD;
+  --success-bg: #F0FDF4;
+  --success-border: #86EFAC;
+  --warning-bg: #FFFBEB;
+  --warning-border: #FCD34D;
+  --danger-bg: #FFF5F5;
+  --danger-border: #FCA5A5;
+  --tag-bg: #DBEAFE;
+  --tag-color: #1D4ED8;
+  --sidebar-w: 280px;
+  --content-max: 820px;
+  --header-h: 64px;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0F1117;
+  --bg-secondary: #161B27;
+  --bg-tertiary: #1A2235;
+  --bg-card: #1E2538;
+  --bg-sidebar: #161B27;
+  --bg-code: #0D1526;
+  --text-primary: #E8ECF4;
+  --text-secondary: #9BAAC5;
+  --text-muted: #64748B;
+  --accent-blue: #60A5FA;
+  --accent-light: #1E3A5F;
+  --accent-hover: #93C5FD;
+  --border: #2A3348;
+  --border-accent: #1E3A5F;
+  --shadow: 0 2px 16px rgba(0,0,0,0.4);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.3);
+  --callout-bg: #0D1F38;
+  --callout-border: #1E3A5F;
+  --success-bg: #052E16;
+  --success-border: #166534;
+  --warning-bg: #1C1200;
+  --warning-border: #92400E;
+  --danger-bg: #1C0505;
+  --danger-border: #991B1B;
+  --tag-bg: #1E3A5F;
+  --tag-color: #93C5FD;
+}
+
+/* ====================== RESET & BASE ====================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+h1, h2, h3, h4 { font-family: 'DM Serif Display', serif; line-height: 1.25; }
+a { color: var(--accent-blue); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+button { cursor: pointer; font-family: 'Nunito', sans-serif; }
+
+/* ====================== HEADER ====================== */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--header-h);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 24px;
+  box-shadow: var(--shadow);
+}
+.header-brand {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.header-logo {
+  width: 36px; height: 36px; background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: 18px; font-family: 'DM Serif Display', serif;
+}
+.header-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+.header-title span { color: var(--accent-blue); }
+.search-bar {
+  flex: 1; max-width: 420px; position: relative;
+}
+.search-bar input {
+  width: 100%; padding: 9px 16px 9px 40px;
+  background: var(--bg-tertiary); border: 1.5px solid var(--border);
+  border-radius: 10px; font-size: 14px; color: var(--text-primary);
+  font-family: 'Nunito', sans-serif; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-bar input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+.search-bar input::placeholder { color: var(--text-muted); }
+.search-icon {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 15px; pointer-events: none;
+}
+.search-results {
+  position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; box-shadow: var(--shadow-card);
+  z-index: 200; display: none; max-height: 360px; overflow-y: auto;
+}
+.search-results.active { display: block; }
+.search-result-item {
+  padding: 12px 16px; cursor: pointer; border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: var(--bg-tertiary); }
+.search-result-item .sr-title { font-weight: 700; font-size: 14px; color: var(--text-primary); }
+.search-result-item .sr-cat { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.progress-badge {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; color: var(--text-secondary);
+}
+.progress-bar-mini {
+  width: 80px; height: 6px; background: var(--border); border-radius: 4px; overflow: hidden;
+}
+.progress-bar-mini-fill { height: 100%; background: var(--accent-blue); border-radius: 4px; transition: width 0.5s; }
+.theme-toggle {
+  padding: 8px 14px; border-radius: 9px; border: 1.5px solid var(--border);
+  background: var(--bg-tertiary); color: var(--text-primary);
+  font-size: 14px; font-weight: 600; transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.theme-toggle:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+.hamburger {
+  display: none; background: none; border: none; color: var(--text-primary); font-size: 22px; padding: 4px;
+}
+
+/* ====================== LAYOUT ====================== */
+.layout { display: flex; margin-top: var(--header-h); min-height: calc(100vh - var(--header-h)); }
+
+/* ====================== SIDEBAR ====================== */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  position: fixed; top: var(--header-h); bottom: 0; left: 0;
+  overflow-y: auto; background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  padding: 16px 0 40px;
+  transition: transform 0.3s;
+  z-index: 90;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.sidebar-section { margin-bottom: 4px; }
+.sidebar-cat-btn {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px; background: none; border: none;
+  font-weight: 700; font-size: 12px; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text-muted);
+  cursor: pointer; transition: color 0.2s;
+}
+.sidebar-cat-btn:hover { color: var(--accent-blue); }
+.sidebar-cat-btn .chevron { transition: transform 0.3s; font-size: 10px; }
+.sidebar-cat-btn.open .chevron { transform: rotate(180deg); }
+.sidebar-links { display: none; }
+.sidebar-links.open { display: block; }
+.sidebar-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px 9px 32px;
+  font-size: 14px; font-weight: 500; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent;
+  text-decoration: none; user-select: none;
+}
+.sidebar-link:hover { color: var(--accent-blue); background: var(--bg-tertiary); text-decoration: none; }
+.sidebar-link.active {
+  color: var(--accent-blue); background: var(--callout-bg);
+  border-left-color: var(--accent-blue); font-weight: 700;
+}
+.sidebar-link .check { font-size: 12px; margin-left: auto; opacity: 0; transition: opacity 0.2s; }
+.sidebar-link.done .check { opacity: 1; color: #22C55E; }
+.sidebar-home-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 20px; margin: 0 12px 12px;
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  color: white; border-radius: 10px; font-weight: 700; font-size: 14px;
+  border: none; cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.sidebar-home-btn:hover { opacity: 0.9; transform: translateY(-1px); color: white; text-decoration: none; }
+
+/* ====================== CONTENT AREA ====================== */
+.content-area {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 40px 40px 80px;
+  min-height: 100%;
+}
+.page { display: none; }
+.page.active { display: block; animation: fadeInUp 0.35s ease; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ====================== HOME PAGE ====================== */
+.hero {
+  background: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 50%, #60A5FA 100%);
+  border-radius: 20px; padding: 60px 50px; margin-bottom: 40px;
+  position: relative; overflow: hidden; color: white;
+}
+.hero::before {
+  content: ''; position: absolute; top: -50%; right: -10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -60%; left: 10%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero-eyebrow {
+  display: inline-block; background: rgba(255,255,255,0.18);
+  border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 700;
+  margin-bottom: 16px; letter-spacing: 1px; text-transform: uppercase;
+}
+.hero h1 { font-size: 42px; line-height: 1.15; margin-bottom: 16px; position: relative; z-index: 1; }
+.hero p { font-size: 18px; opacity: 0.88; max-width: 520px; position: relative; z-index: 1; line-height: 1.6; }
+.hero-actions { margin-top: 28px; display: flex; gap: 14px; flex-wrap: wrap; position: relative; z-index: 1; }
+.btn-hero {
+  padding: 12px 26px; border-radius: 10px; font-weight: 700; font-size: 15px;
+  border: none; cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.btn-primary { background: white; color: #1D4ED8; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); color: #1D4ED8; text-decoration: none; }
+.btn-outline { background: rgba(255,255,255,0.15); color: white; border: 1.5px solid rgba(255,255,255,0.4); }
+.btn-outline:hover { background: rgba(255,255,255,0.25); color: white; text-decoration: none; }
+.quotes-strip {
+  background: var(--bg-tertiary); border: 1px solid var(--border-accent);
+  border-radius: 14px; padding: 20px 24px; margin-bottom: 36px;
+  display: flex; gap: 24px; overflow-x: auto;
+}
+.quote-item {
+  flex-shrink: 0; max-width: 320px; padding: 14px 18px;
+  background: var(--bg-card); border-radius: 10px; border-left: 3px solid var(--accent-blue);
+  box-shadow: var(--shadow);
+}
+.quote-item p { font-size: 14px; font-style: italic; color: var(--text-secondary); line-height: 1.6; }
+.quote-item cite { font-size: 12px; color: var(--accent-blue); font-weight: 700; margin-top: 6px; display: block; }
+.home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.home-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px; cursor: pointer;
+  transition: all 0.25s; box-shadow: var(--shadow-card);
+  position: relative; overflow: hidden;
+}
+.home-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(59,130,246,0.15); border-color: var(--accent-blue); }
+.home-card-icon { font-size: 36px; margin-bottom: 14px; display: block; }
+.home-card h3 { font-size: 20px; margin-bottom: 8px; }
+.home-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.home-card-lessons { margin-top: 14px; font-size: 12px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.8px; }
+.home-card-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 16px; overflow: hidden; }
+.home-card-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-blue), #60A5FA); border-radius: 2px; transition: width 0.5s; }
+
+/* ====================== LESSON PAGE ====================== */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 24px;
+  font-size: 13px; color: var(--text-muted);
+}
+.breadcrumb a { color: var(--accent-blue); font-weight: 600; cursor: pointer; }
+.breadcrumb span { color: var(--text-muted); }
+.lesson-header { margin-bottom: 32px; }
+.lesson-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.tag {
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.5px; display: inline-block;
+}
+.tag-blue { background: var(--tag-bg); color: var(--tag-color); }
+.tag-green { background: #DCFCE7; color: #15803D; }
+.tag-orange { background: #FEF3C7; color: #D97706; }
+.tag-red { background: #FEE2E2; color: #DC2626; }
+[data-theme="dark"] .tag-green { background: #052E16; color: #4ADE80; }
+[data-theme="dark"] .tag-orange { background: #1C1200; color: #FBBF24; }
+[data-theme="dark"] .tag-red { background: #1C0505; color: #F87171; }
+.lesson-header h1 { font-size: 36px; line-height: 1.2; margin-bottom: 12px; }
+.lesson-summary {
+  font-size: 17px; color: var(--text-secondary); line-height: 1.7;
+  border-left: 4px solid var(--accent-blue); padding-left: 20px;
+  background: var(--callout-bg); border-radius: 0 10px 10px 0; padding: 16px 20px;
+  margin-bottom: 32px;
+}
+.lesson-body h2 { font-size: 26px; margin: 40px 0 16px; color: var(--text-primary); }
+.lesson-body h3 { font-size: 20px; margin: 28px 0 12px; color: var(--text-primary); }
+.lesson-body h4 { font-size: 17px; margin: 20px 0 8px; color: var(--text-primary); font-weight: 700; font-family: 'Nunito', sans-serif; }
+.lesson-body p { margin-bottom: 16px; color: var(--text-secondary); }
+.lesson-body ul, .lesson-body ol { padding-left: 24px; margin-bottom: 16px; color: var(--text-secondary); }
+.lesson-body li { margin-bottom: 6px; }
+.lesson-body strong { color: var(--text-primary); font-weight: 700; }
+
+/* ====================== CALLOUT BOXES ====================== */
+.callout {
+  border-radius: 12px; padding: 18px 22px; margin: 24px 0;
+  border-left: 4px solid; display: flex; gap: 14px; align-items: flex-start;
+}
+.callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.callout-content p { margin: 0; font-size: 15px; }
+.callout-info { background: var(--callout-bg); border-color: var(--accent-blue); }
+.callout-success { background: var(--success-bg); border-color: var(--success-border); }
+.callout-warning { background: var(--warning-bg); border-color: var(--warning-border); }
+.callout-danger { background: var(--danger-bg); border-color: var(--danger-border); }
+
+/* ====================== FORMULA BOX ====================== */
+.formula-box {
+  background: var(--bg-code); border: 1.5px solid var(--border-accent);
+  border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+  font-family: 'JetBrains Mono', monospace; font-size: 16px;
+  color: var(--text-primary); text-align: center;
+}
+.formula-box .formula-label {
+  font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px; color: var(--accent-blue);
+  margin-bottom: 10px; display: block;
+}
+.formula-main { font-size: 20px; font-weight: 500; }
+.formula-frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 6px; }
+.formula-num { border-bottom: 2px solid currentColor; padding-bottom: 3px; margin-bottom: 3px; }
+
+/* ====================== TABLE ====================== */
+.data-table { width: 100%; border-collapse: collapse; margin: 20px 0; border-radius: 12px; overflow: hidden; }
+.data-table th {
+  background: var(--accent-blue); color: white; padding: 12px 16px;
+  text-align: left; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.data-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-secondary); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:nth-child(even) td { background: var(--bg-tertiary); }
+.data-table td:first-child { font-weight: 600; color: var(--text-primary); }
+
+/* ====================== INTERACTIVE CALCULATOR ====================== */
+.calculator-card {
+  background: var(--bg-card); border: 2px solid var(--border-accent);
+  border-radius: 16px; padding: 28px; margin: 32px 0;
+  box-shadow: var(--shadow-card);
+}
+.calculator-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+.calculator-title span { background: var(--accent-blue); color: white; width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; }
+.calc-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.calc-field label { display: block; font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+.calc-field input {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: 9px; font-size: 15px; font-family: 'Nunito', sans-serif;
+  background: var(--bg-tertiary); color: var(--text-primary); outline: none;
+  transition: border-color 0.2s;
+}
+.calc-field input:focus { border-color: var(--accent-blue); }
+.calc-btn {
+  width: 100%; padding: 12px; background: var(--accent-blue); color: white;
+  border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+  transition: all 0.2s; margin-bottom: 16px;
+}
+.calc-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.calc-result {
+  background: var(--bg-tertiary); border-radius: 10px; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  border: 1px solid var(--border); display: none;
+}
+.calc-result.visible { display: flex; }
+.calc-result-label { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+.calc-result-value { font-size: 28px; font-weight: 800; color: var(--accent-blue); font-family: 'DM Serif Display', serif; }
+.calc-result-interpret { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* ====================== EXAMPLE BLOCK ====================== */
+.example-block {
+  background: var(--bg-tertiary); border: 1px solid var(--border);
+  border-radius: 12px; margin: 20px 0; overflow: hidden;
+}
+.example-header {
+  background: var(--accent-light); padding: 10px 18px;
+  font-size: 13px; font-weight: 700; color: var(--accent-hover); text-transform: uppercase; letter-spacing: 0.7px;
+  display: flex; align-items: center; gap: 8px;
+}
+[data-theme="dark"] .example-header { color: var(--accent-blue); }
+.example-body { padding: 18px 20px; font-size: 14px; color: var(--text-secondary); }
+.example-body p { margin-bottom: 8px; }
+.example-body p:last-child { margin-bottom: 0; }
+
+/* ====================== KEY POINTS ====================== */
+.key-points { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin: 24px 0; }
+.key-points h4 { font-size: 15px; margin-bottom: 14px; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+.key-points ul { list-style: none; padding: 0; }
+.key-points li { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; display: flex; gap: 10px; align-items: flex-start; }
+.key-points li:last-child { border-bottom: none; }
+.key-points li::before { content: '✔'; color: var(--accent-blue); flex-shrink: 0; font-weight: 700; }
+
+/* ====================== COMPARE GRID ====================== */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.compare-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.compare-card h4 { font-size: 16px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+.compare-card.bull h4 { border-color: #22C55E; color: #16A34A; }
+.compare-card.bear h4 { border-color: #EF4444; color: #DC2626; }
+.compare-card ul { list-style: none; padding: 0; }
+.compare-card li { font-size: 13px; padding: 5px 0; color: var(--text-secondary); display: flex; gap: 8px; }
+.compare-card.bull li::before { content: '▲'; color: #22C55E; font-size: 10px; margin-top: 4px; }
+.compare-card.bear li::before { content: '▼'; color: #EF4444; font-size: 10px; margin-top: 4px; }
+
+/* ====================== QUIZ ====================== */
+.quiz-section { margin: 40px 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+.quiz-title { font-size: 20px; margin-bottom: 6px; }
+.quiz-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+.quiz-q { margin-bottom: 28px; }
+.quiz-q-text { font-size: 16px; font-weight: 600; margin-bottom: 14px; color: var(--text-primary); }
+.quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.quiz-opt {
+  padding: 12px 16px; border: 2px solid var(--border); border-radius: 10px;
+  font-size: 14px; font-weight: 500; background: var(--bg-tertiary);
+  cursor: pointer; transition: all 0.15s; text-align: left; color: var(--text-primary);
+}
+.quiz-opt:hover { border-color: var(--accent-blue); background: var(--callout-bg); }
+.quiz-opt.correct { border-color: #22C55E; background: var(--success-bg); color: #15803D; }
+.quiz-opt.wrong { border-color: #EF4444; background: var(--danger-bg); color: #DC2626; }
+.quiz-feedback { margin-top: 12px; font-size: 14px; font-weight: 600; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct-fb { color: #16A34A; }
+.quiz-feedback.wrong-fb { color: #DC2626; }
+
+/* ====================== NEXT/PREV ====================== */
+.lesson-nav { display: flex; gap: 16px; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
+.nav-btn {
+  flex: 1; padding: 18px 22px; border: 1.5px solid var(--border);
+  border-radius: 14px; background: var(--bg-card); cursor: pointer;
+  transition: all 0.2s; text-align: left; color: var(--text-primary);
+}
+.nav-btn:hover { border-color: var(--accent-blue); box-shadow: var(--shadow); }
+.nav-btn.next-btn { text-align: right; }
+.nav-btn-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
+.nav-btn-title { font-size: 15px; font-weight: 700; color: var(--accent-blue); }
+.mark-complete-btn {
+  padding: 12px 24px; background: #22C55E; color: white; border: none;
+  border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+  margin-top: 24px;
+}
+.mark-complete-btn:hover { background: #16A34A; transform: translateY(-1px); }
+.mark-complete-btn.done { background: #15803D; }
+
+/* ====================== SECTOR CARDS ====================== */
+.sector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 24px 0; }
+.sector-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; transition: all 0.2s; }
+.sector-card:hover { border-color: var(--accent-blue); box-shadow: var(--shadow); transform: translateY(-2px); }
+.sector-icon { font-size: 32px; margin-bottom: 10px; }
+.sector-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.sector-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+.sector-gdp { font-size: 12px; color: var(--accent-blue); font-weight: 700; margin-top: 8px; }
+
+/* ====================== INDEX CARDS ====================== */
+.index-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0; }
+.index-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
+.index-card h4 { font-size: 18px; margin-bottom: 4px; }
+.index-card .exchange { font-size: 12px; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px; }
+.index-card .companies { font-size: 32px; font-weight: 800; color: var(--accent-blue); font-family: 'DM Serif Display', serif; }
+.index-card .companies-label { font-size: 12px; color: var(--text-muted); }
+.index-card p { font-size: 13px; color: var(--text-secondary); margin-top: 10px; }
+
+/* ====================== RESPONSIVE ====================== */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.2); }
+  .content-area { margin-left: 0; padding: 24px 20px 60px; }
+  .hamburger { display: flex; }
+  .hero { padding: 40px 28px; }
+  .hero h1 { font-size: 30px; }
+  .calc-grid { grid-template-columns: 1fr; }
+  .quiz-options { grid-template-columns: 1fr; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .header-title { font-size: 18px; }
+  .search-bar { max-width: 200px; }
+  .lesson-nav { flex-direction: column; }
+}
+@media (max-width: 600px) {
+  .home-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 26px; }
+  .lesson-header h1 { font-size: 26px; }
+  .search-bar { display: none; }
+}
+
+/* ====================== SIDEBAR OVERLAY ====================== */
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 89; }
+.sidebar-overlay.active { display: block; }
+
+/* ====================== SCROLLBAR ====================== */
+.content-area::-webkit-scrollbar { width: 6px; }
+.content-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ====================== PROGRESS RING ====================== */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin: 32px 0; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
+.stat-num { font-size: 36px; font-weight: 800; font-family: 'DM Serif Display', serif; color: var(--accent-blue); }
+.stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+/* Table of contents dot */
+.toc-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); margin-top: 8px; flex-shrink: 0; }
+.sidebar-link.active .toc-dot { background: var(--accent-blue); }
+
+/* Divider */
+.divider { height: 1px; background: var(--border); margin: 32px 0; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+  <div class="header-brand">
+    <div class="header-logo">S</div>
+    <span class="header-title">Stock<span>Wise</span></span>
+  </div>
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search lessons, concepts..." oninput="doSearch(this.value)" autocomplete="off">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+  <div class="header-actions">
+    <div class="progress-badge">
+      <span id="progressText">0 / 20</span>
+      <div class="progress-bar-mini"><div class="progress-bar-mini-fill" id="miniProgressBar" style="width:0%"></div></div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span></button>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-home-btn" onclick="navigate('home')">🏠 Home</button>
+
+  <div class="sidebar-section">
+    <button class="sidebar-cat-btn open" onclick="toggleCat(this)">📊 Basic Economics <span class="chevron">▲</span></button>
+    <div class="sidebar-links open">
+      <div class="sidebar-link" onclick="navigate('gdp')" data-page="gdp"><div class="toc-dot"></div>Gross Domestic Product<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('inflation')" data-page="inflation"><div class="toc-dot"></div>Inflation & CPI<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('interest-rates')" data-page="interest-rates"><div class="toc-dot"></div>Interest Rates & RBI<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('fiscal')" data-page="fiscal"><div class="toc-dot"></div>Fiscal Policy & Deficit<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('pmi')" data-page="pmi"><div class="toc-dot"></div>PMI Explained<span class="check">✓</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <button class="sidebar-cat-btn" onclick="toggleCat(this)">🌍 Financial Markets <span class="chevron">▼</span></button>
+    <div class="sidebar-links">
+      <div class="sidebar-link" onclick="navigate('sectors')" data-page="sectors"><div class="toc-dot"></div>Primary, Secondary & Tertiary<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('indices')" data-page="indices"><div class="toc-dot"></div>NIFTY, SENSEX & Indices<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('bull-bear')" data-page="bull-bear"><div class="toc-dot"></div>Bull & Bear Markets<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('exchanges')" data-page="exchanges"><div class="toc-dot"></div>NSE & BSE Exchanges<span class="check">✓</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <button class="sidebar-cat-btn" onclick="toggleCat(this)">📈 Stock Fundamentals <span class="chevron">▼</span></button>
+    <div class="sidebar-links">
+      <div class="sidebar-link" onclick="navigate('revenue')" data-page="revenue"><div class="toc-dot"></div>Revenue & Earnings Growth<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('pe-ratio')" data-page="pe-ratio"><div class="toc-dot"></div>P/E Ratio<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('pb-ratio')" data-page="pb-ratio"><div class="toc-dot"></div>Book Value & P/B Ratio<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('de-ratio')" data-page="de-ratio"><div class="toc-dot"></div>Debt-to-Equity Ratio<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('roe-roce')" data-page="roe-roce"><div class="toc-dot"></div>ROE & ROCE<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('cash-flow')" data-page="cash-flow"><div class="toc-dot"></div>Cash Flow Analysis<span class="check">✓</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <button class="sidebar-cat-btn" onclick="toggleCat(this)">💼 Investment Strategies <span class="chevron">▼</span></button>
+    <div class="sidebar-links">
+      <div class="sidebar-link" onclick="navigate('fii-dii')" data-page="fii-dii"><div class="toc-dot"></div>FIIs & DIIs<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('retail-vs-inst')" data-page="retail-vs-inst"><div class="toc-dot"></div>Retail vs Institutional<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('ipo-fpo')" data-page="ipo-fpo"><div class="toc-dot"></div>IPO & FPO<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('mutual-funds')" data-page="mutual-funds"><div class="toc-dot"></div>Mutual Funds & ETFs<span class="check">✓</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <button class="sidebar-cat-btn" onclick="toggleCat(this)">⚖️ Regulatory Framework <span class="chevron">▼</span></button>
+    <div class="sidebar-links">
+      <div class="sidebar-link" onclick="navigate('sebi')" data-page="sebi"><div class="toc-dot"></div>SEBI & Market Regulation<span class="check">✓</span></div>
+      <div class="sidebar-link" onclick="navigate('rbi')" data-page="rbi"><div class="toc-dot"></div>RBI & Monetary Policy<span class="check">✓</span></div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="content-area">
+
+<!-- ===== HOME PAGE ===== -->
+<section class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-eyebrow">📚 Stock Fundamentals Guide</div>
+    <h1>Master the Language<br>of the Markets</h1>
+    <p>A complete, structured guide to stock market fundamentals — from basic economic concepts to advanced investment strategies. India-focused with global relevance.</p>
+    <div class="hero-actions">
+      <button class="btn-hero btn-primary" onclick="navigate('gdp')">Start Learning →</button>
+      <button class="btn-hero btn-outline" onclick="navigate('pe-ratio')">Jump to Calculators</button>
+    </div>
+  </div>
+
+  <div class="quotes-strip">
+    <div class="quote-item">
+      <p>"Be fearful when others are greedy, and greedy when others are fearful."</p>
+      <cite>— Warren Buffett</cite>
+    </div>
+    <div class="quote-item">
+      <p>"The stock market is a device for transferring money from the impatient to the patient."</p>
+      <cite>— Warren Buffett</cite>
+    </div>
+    <div class="quote-item">
+      <p>"Revenue is vanity, profit is sanity, but cash flow is reality."</p>
+      <cite>— Financial Wisdom</cite>
+    </div>
+    <div class="quote-item">
+      <p>"In markets, patience pays, but timing is everything. Master the game, and the market will work for you."</p>
+      <cite>— Market Wisdom</cite>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="stat-lessons">20</div><div class="stat-label">Lessons</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-done">0</div><div class="stat-label">Completed</div></div>
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Categories</div></div>
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Calculators</div></div>
+  </div>
+
+  <h2 style="font-size:26px;margin-bottom:20px;">Choose Your Topic</h2>
+  <div class="home-grid">
+    <div class="home-card" onclick="navigate('gdp')">
+      <span class="home-card-icon">📊</span>
+      <h3>Basic Economic Concepts</h3>
+      <p>GDP, inflation, interest rates, fiscal policy, and the macro forces that drive market cycles.</p>
+      <div class="home-card-lessons">5 Lessons · Beginner</div>
+      <div class="home-card-bar"><div class="home-card-bar-fill cat-bar" data-cat="econ" style="width:0%"></div></div>
+    </div>
+    <div class="home-card" onclick="navigate('sectors')">
+      <span class="home-card-icon">🌍</span>
+      <h3>Financial Markets & Sectors</h3>
+      <p>NIFTY, SENSEX, NSE, BSE, bull & bear markets, commodities, and how sectors shape the economy.</p>
+      <div class="home-card-lessons">4 Lessons · Beginner</div>
+      <div class="home-card-bar"><div class="home-card-bar-fill cat-bar" data-cat="markets" style="width:0%"></div></div>
+    </div>
+    <div class="home-card" onclick="navigate('revenue')">
+      <span class="home-card-icon">📈</span>
+      <h3>Stock Fundamentals</h3>
+      <p>Revenue growth, P/E ratio, book value, D/E ratio, ROE, ROCE, cash flow and promoter holdings.</p>
+      <div class="home-card-lessons">6 Lessons · Intermediate</div>
+      <div class="home-card-bar"><div class="home-card-bar-fill cat-bar" data-cat="fund" style="width:0%"></div></div>
+    </div>
+    <div class="home-card" onclick="navigate('fii-dii')">
+      <span class="home-card-icon">💼</span>
+      <h3>Investment Strategies</h3>
+      <p>FIIs, DIIs, retail vs institutional investors, IPOs, mutual funds, ETFs, and PE/VC.</p>
+      <div class="home-card-lessons">4 Lessons · Intermediate</div>
+      <div class="home-card-bar"><div class="home-card-bar-fill cat-bar" data-cat="ism" style="width:0%"></div></div>
+    </div>
+    <div class="home-card" onclick="navigate('sebi')">
+      <span class="home-card-icon">⚖️</span>
+      <h3>Regulatory Framework</h3>
+      <p>SEBI's role in protecting investors, RBI's monetary policy, and how regulations shape markets.</p>
+      <div class="home-card-lessons">2 Lessons · Advanced</div>
+      <div class="home-card-bar"><div class="home-card-bar-fill cat-bar" data-cat="reg" style="width:0%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GDP ===== -->
+<section class="page" id="page-gdp">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Basic Economics</a> <span>›</span> GDP</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-blue">Economics</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 8 min read</span></div>
+    <h1>Gross Domestic Product (GDP)</h1>
+    <div class="lesson-summary">GDP measures the total monetary value of all goods and services produced within a country's borders over a specific period. It is the single most important indicator of a nation's economic health — and a vital compass for every investor.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. What is GDP?</h2>
+    <p>Gross Domestic Product (GDP) represents the complete picture of economic activity in a country — from the farmer who grows wheat to the software engineer shipping code, every rupee of productive output is counted.</p>
+    <p>There are three types of GDP to know:</p>
+    <ul>
+      <li><strong>Real GDP</strong> — Adjusted for inflation, showing actual economic growth. The most useful for comparison over time.</li>
+      <li><strong>Nominal GDP</strong> — Not adjusted for inflation, reflecting current market prices.</li>
+      <li><strong>GDP Growth Rate</strong> — The percentage increase or decrease in GDP compared to a previous period.</li>
+    </ul>
+    <div class="formula-box">
+      <span class="formula-label">GDP Formula (Expenditure Approach)</span>
+      <div class="formula-main">GDP = C + I + G + (X − M)</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:8px;font-family:'Nunito',sans-serif">C=Consumption · I=Investment · G=Government Spending · X=Exports · M=Imports</div>
+    </div>
+
+    <h2>2. Why GDP Matters for Investors</h2>
+    <p>GDP is not just an academic number — it drives stock markets, bond yields, interest rate decisions, and business cycles.</p>
+    <div class="compare-grid">
+      <div class="compare-card bull">
+        <h4>🐂 Strong GDP Growth</h4>
+        <ul>
+          <li>Bull market conditions — stock prices rise</li>
+          <li>Cyclical stocks outperform (Banks, Auto, Real Estate)</li>
+          <li>RBI may raise interest rates to curb inflation</li>
+          <li>Investor confidence is high</li>
+          <li>FII inflows increase</li>
+        </ul>
+      </div>
+      <div class="compare-card bear">
+        <h4>🐻 Slow/Negative GDP Growth</h4>
+        <ul>
+          <li>Bear market or stagnation — stocks fall</li>
+          <li>Defensive stocks hold up (FMCG, Pharma, IT)</li>
+          <li>RBI may cut rates to stimulate growth</li>
+          <li>Investor uncertainty rises</li>
+          <li>FII outflows possible</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Sector Impact of GDP</h3>
+    <table class="data-table">
+      <thead><tr><th>GDP Scenario</th><th>Best Performing Sectors</th><th>Strategy</th></tr></thead>
+      <tbody>
+        <tr><td>High Growth (>7%)</td><td>Banks, Auto, Real Estate, Consumer Goods</td><td>Invest in cyclical growth stocks</td></tr>
+        <tr><td>Moderate Growth (4–6%)</td><td>IT, Financials, Infrastructure</td><td>Diversified portfolio approach</td></tr>
+        <tr><td>Low Growth (<3%)</td><td>FMCG, Pharmaceuticals, Utilities</td><td>Shift to defensive, dividend stocks</td></tr>
+        <tr><td>Recession (Negative)</td><td>Gold, Government Bonds, Cash</td><td>Capital preservation strategy</td></tr>
+      </tbody>
+    </table>
+
+    <div class="example-block">
+      <div class="example-header">📋 Example — India's GDP & Market Impact</div>
+      <div class="example-body">
+        <p>India's GDP grew at <strong>8.2%</strong> in FY2023-24, one of the fastest among major economies. This strong growth led to:</p>
+        <p>✅ NIFTY 50 hitting all-time highs above 22,000 · ✅ Surge in FII inflows into Indian equities · ✅ Banking and Infrastructure stocks outperforming · ✅ RBI maintaining elevated interest rates to contain inflation</p>
+      </div>
+    </div>
+
+    <div class="callout callout-info"><div class="callout-icon">💡</div><div class="callout-content"><p><strong>Key Insight:</strong> A <em>recession</em> is technically defined as two consecutive quarters of negative GDP growth. Knowing this helps you identify market turning points before they are widely announced.</p></div></div>
+
+    <h2>3. How GDP Affects Interest Rates</h2>
+    <p>The RBI (Reserve Bank of India) uses GDP data to calibrate monetary policy:</p>
+    <ul>
+      <li><strong>Low GDP Growth →</strong> RBI lowers interest rates → Cheaper loans → Higher spending & investments → Bullish markets</li>
+      <li><strong>High GDP Growth with Inflation →</strong> RBI raises interest rates → Borrowing becomes expensive → Market correction</li>
+    </ul>
+
+    <div class="key-points">
+      <h4>🎯 Key Takeaways</h4>
+      <ul>
+        <li>GDP is the heartbeat of the economy — track quarterly releases (every March, June, September, December)</li>
+        <li>GDP above 7% = generally bullish for Indian equities</li>
+        <li>Two consecutive negative quarters = recession — be defensive</li>
+        <li>High GDP pushes RBI to raise rates — watch impact on rate-sensitive sectors like banks and real estate</li>
+        <li>India's GDP target: becoming a $5 trillion economy — a long-term bullish thesis</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-section">
+    <h3 class="quiz-title">🧠 Quick Quiz</h3>
+    <p class="quiz-subtitle">Test your understanding of GDP.</p>
+    <div class="quiz-q">
+      <p class="quiz-q-text">1. Which type of GDP best reflects actual economic growth over time?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">Nominal GDP</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'correct')">Real GDP</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">Market Cap GDP</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">Current GDP</button>
+      </div>
+      <div class="quiz-feedback">Real GDP adjusts for inflation, making it the best measure of actual economic growth.</div>
+    </div>
+    <div class="quiz-q">
+      <p class="quiz-q-text">2. Which sector performs best during HIGH GDP growth?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">Pharmaceuticals</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">Utilities</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'correct')">Banking & Automobiles</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">FMCG</button>
+      </div>
+      <div class="quiz-feedback">Cyclical sectors like Banking and Automobiles thrive during high GDP growth periods.</div>
+    </div>
+  </div>
+
+  <button class="mark-complete-btn" onclick="markComplete('gdp', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('home')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Home</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('inflation')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Inflation & CPI</div></button>
+  </div>
+</section>
+
+<!-- ===== INFLATION ===== -->
+<section class="page" id="page-inflation">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Basic Economics</a> <span>›</span> Inflation</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-blue">Economics</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 7 min read</span></div>
+    <h1>Inflation & Consumer Price Index (CPI)</h1>
+    <div class="lesson-summary">Inflation is the silent tax on your savings. Understanding how it works — and how it's measured — is essential for every investor who wants to protect and grow their wealth over time.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. What is Inflation?</h2>
+    <p>Inflation refers to the general rise in the prices of goods and services over time, which reduces the purchasing power of money. In simpler terms: the same amount of money buys you less over time.</p>
+    <div class="callout callout-success"><div class="callout-icon">✅</div><div class="callout-content"><p><strong>Moderate inflation (2–4% annually)</strong> is healthy — it signals a growing economy where demand exceeds supply.</p></div></div>
+    <div class="callout callout-warning"><div class="callout-icon">⚠️</div><div class="callout-content"><p><strong>High inflation (above 6–7%)</strong> erodes purchasing power, squeezes corporate margins, and forces the RBI to hike interest rates.</p></div></div>
+    <div class="callout callout-danger"><div class="callout-icon">🚨</div><div class="callout-content"><p><strong>Hyperinflation</strong> (extremely high inflation) can destroy currencies and lead to economic collapse — rare but catastrophic.</p></div></div>
+
+    <h2>2. How is Inflation Measured?</h2>
+    <h3>Consumer Price Index (CPI)</h3>
+    <p>CPI tracks the price changes of a "basket" of goods and services commonly purchased by households — food, fuel, clothing, healthcare, education, and more.</p>
+    <div class="formula-box">
+      <span class="formula-label">CPI Formula</span>
+      <div class="formula-main">CPI = <span class="formula-frac"><span class="formula-num">Cost of Basket in Current Year</span><span>Cost of Basket in Base Year</span></span> × 100</div>
+    </div>
+    <h3>Wholesale Price Index (WPI)</h3>
+    <p>WPI measures price changes at the producer/wholesale level — before goods reach consumers. It is a leading indicator of future CPI.</p>
+    <table class="data-table">
+      <thead><tr><th>Indicator</th><th>Measures</th><th>Perspective</th><th>Key Use</th></tr></thead>
+      <tbody>
+        <tr><td>CPI</td><td>Consumer prices</td><td>End consumer</td><td>RBI monetary policy target</td></tr>
+        <tr><td>WPI</td><td>Wholesale prices</td><td>Producer/wholesale</td><td>Early indicator of inflation trends</td></tr>
+        <tr><td>Core CPI</td><td>CPI minus food & fuel</td><td>Underlying inflation</td><td>More stable policy signal</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3. Inflation's Impact on Markets</h2>
+    <ul>
+      <li><strong>Equities:</strong> Moderate inflation is good for stocks — companies can raise prices. High inflation squeezes margins.</li>
+      <li><strong>Bonds:</strong> Rising inflation hurts bond returns — investors demand higher yields.</li>
+      <li><strong>Real Estate:</strong> Property prices generally rise with inflation — a natural hedge.</li>
+      <li><strong>Gold:</strong> Classic inflation hedge — historically holds value during inflationary periods.</li>
+      <li><strong>Cash:</strong> Worst performer — purchasing power erodes directly.</li>
+    </ul>
+    <div class="key-points">
+      <h4>🎯 Key Takeaways</h4>
+      <ul>
+        <li>RBI's inflation target is 4% (with a band of 2–6%) — watch CPI releases monthly</li>
+        <li>High CPI → RBI hikes repo rate → Borrowing costs rise → Markets may fall</li>
+        <li>Falling inflation → RBI cuts rates → Cheaper credit → Markets often rally</li>
+        <li>Invest in real assets (equities, real estate, gold) to beat inflation over the long term</li>
+        <li>FMCG and energy companies can often pass on inflation — good defensive plays</li>
+      </ul>
+    </div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('inflation', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('gdp')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">GDP</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('interest-rates')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Interest Rates & RBI</div></button>
+  </div>
+</section>
+
+<!-- ===== INTEREST RATES ===== -->
+<section class="page" id="page-interest-rates">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Basic Economics</a> <span>›</span> Interest Rates</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-blue">Economics</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 8 min read</span></div>
+    <h1>Interest Rates & RBI Monetary Policy</h1>
+    <div class="lesson-summary">Interest rates are the most powerful lever in the financial system. When the RBI moves the repo rate by even 0.25%, it ripples through every loan, bond, stock, and savings account in the country.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. Key RBI Interest Rate Tools</h2>
+    <table class="data-table">
+      <thead><tr><th>Rate</th><th>Definition</th><th>Current Effect</th></tr></thead>
+      <tbody>
+        <tr><td>Repo Rate</td><td>Rate at which RBI lends to commercial banks</td><td>Key policy rate — direct market impact</td></tr>
+        <tr><td>Reverse Repo Rate</td><td>Rate at which banks deposit money with RBI</td><td>Controls excess liquidity</td></tr>
+        <tr><td>CRR</td><td>Cash Reserve Ratio — % banks must hold with RBI</td><td>Controls money supply in circulation</td></tr>
+        <tr><td>SLR</td><td>Statutory Liquidity Ratio — % in liquid assets</td><td>Ensures bank solvency</td></tr>
+        <tr><td>MSF</td><td>Marginal Standing Facility — emergency overnight borrowing</td><td>Last-resort liquidity window</td></tr>
+      </tbody>
+    </table>
+    <h2>2. How Interest Rate Changes Impact Markets</h2>
+    <div class="compare-grid">
+      <div class="compare-card bull">
+        <h4>📉 Rate Cuts (Dovish)</h4>
+        <ul><li>Cheaper loans for businesses & consumers</li><li>Higher stock valuations (lower discount rate)</li><li>Real estate demand increases</li><li>Bond prices rise (yields fall)</li><li>Growth and cyclical stocks benefit most</li></ul>
+      </div>
+      <div class="compare-card bear">
+        <h4>📈 Rate Hikes (Hawkish)</h4>
+        <ul><li>Costlier borrowing — businesses invest less</li><li>Stocks may correct (higher discount rate)</li><li>Real estate cools down</li><li>Bond prices fall (yields rise)</li><li>Banks benefit; rate-sensitive sectors hurt</li></ul>
+      </div>
+    </div>
+    <div class="callout callout-info"><div class="callout-icon">🏦</div><div class="callout-content"><p>The RBI Monetary Policy Committee (MPC) meets every 2 months to decide on rates. These meetings are major market-moving events. Mark the MPC calendar in your trading schedule!</p></div></div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>Repo rate cuts → great for home loans, auto loans, business expansion</li><li>High inflation forces rate hikes → watch for sector rotation out of rate-sensitive stocks</li><li>Track RBI MPC meetings — 6 times a year — for policy direction</li><li>Banks' Net Interest Margin (NIM) is affected directly by repo rate changes</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('interest-rates', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('inflation')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Inflation & CPI</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('fiscal')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Fiscal Policy</div></button>
+  </div>
+</section>
+
+<!-- ===== FISCAL ===== -->
+<section class="page" id="page-fiscal">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Basic Economics</a> <span>›</span> Fiscal Policy</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-blue">Economics</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 6 min read</span></div>
+    <h1>Fiscal Policy & Government Deficit</h1>
+    <div class="lesson-summary">While the RBI controls monetary policy, the government uses fiscal policy — taxation and spending — to steer the economy. The Union Budget is the single most important fiscal event for Indian investors.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. What is Fiscal Deficit?</h2>
+    <p>Fiscal deficit is the difference between the government's total expenditure and its total revenue (excluding borrowings). It indicates how much the government must borrow to fund its operations.</p>
+    <div class="formula-box"><span class="formula-label">Fiscal Deficit Formula</span><div class="formula-main">Fiscal Deficit = Total Expenditure − Total Revenue (excl. borrowings)</div></div>
+    <p>India's fiscal deficit target is typically set as a percentage of GDP. The government aims to keep it under 5% (ideally towards 3%) for fiscal discipline.</p>
+    <h2>2. Types of Government Spending Impact</h2>
+    <table class="data-table">
+      <thead><tr><th>Spending Type</th><th>Example</th><th>Market Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Capital Expenditure (Capex)</td><td>Roads, ports, railways, defence</td><td>Positive — multiplier effect on economy</td></tr>
+        <tr><td>Revenue Expenditure</td><td>Salaries, subsidies, interest payments</td><td>Neutral to slightly negative</td></tr>
+        <tr><td>Welfare/Subsidies</td><td>Food, fuel, fertiliser subsidies</td><td>Political stability but fiscal strain</td></tr>
+        <tr><td>Tax Cuts</td><td>Corporate tax reduction, personal tax slabs</td><td>Positive — boosts investment & consumption</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-info"><div class="callout-icon">📅</div><div class="callout-content"><p><strong>Budget Day (February 1):</strong> India's Union Budget is presented every year on February 1. It is the single biggest day for sector-specific stock movements — allocations to infrastructure, defence, or healthcare can cause massive swings.</p></div></div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>High government capex → infrastructure & defence stocks surge</li><li>Rising fiscal deficit → government borrows more → bond yields rise → equity markets may react negatively</li><li>Fiscal consolidation (reducing deficit) → positive for sovereign credit rating → bullish for markets long-term</li><li>Watch disinvestment (PSU selling) announcements — can unlock significant value</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('fiscal', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('interest-rates')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Interest Rates</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('pmi')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">PMI Explained</div></button>
+  </div>
+</section>
+
+<!-- ===== PMI ===== -->
+<section class="page" id="page-pmi">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Basic Economics</a> <span>›</span> PMI</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-blue">Economics</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 5 min read</span></div>
+    <h1>PMI — Purchasing Managers' Index</h1>
+    <div class="lesson-summary">PMI is a forward-looking economic indicator based on surveys of purchasing managers. It gives investors an early read on whether business activity is expanding or contracting — often before official GDP data is published.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. Understanding PMI</h2>
+    <p>PMI is derived from monthly surveys sent to purchasing managers in manufacturing and services companies. They report on new orders, production, employment, supplier delivery times, and inventory.</p>
+    <div class="formula-box"><span class="formula-label">PMI Reading Interpretation</span><div class="formula-main">PMI &gt; 50 = Expansion &nbsp;&nbsp;|&nbsp;&nbsp; PMI &lt; 50 = Contraction &nbsp;&nbsp;|&nbsp;&nbsp; PMI = 50 = No Change</div></div>
+    <h2>2. Manufacturing vs Services PMI</h2>
+    <table class="data-table">
+      <thead><tr><th>Type</th><th>Covers</th><th>Key Signal</th><th>India Publisher</th></tr></thead>
+      <tbody>
+        <tr><td>Manufacturing PMI</td><td>Factories, production output</td><td>Industrial health</td><td>S&P Global (formerly IHS Markit)</td></tr>
+        <tr><td>Services PMI</td><td>IT, banking, retail, hospitality</td><td>Consumption strength</td><td>S&P Global</td></tr>
+        <tr><td>Composite PMI</td><td>Combined manufacturing + services</td><td>Overall economy pulse</td><td>S&P Global</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-success"><div class="callout-icon">🇮🇳</div><div class="callout-content"><p>India's Manufacturing PMI has been consistently above 55 in 2023–24, signalling robust expansion — one reason foreign investors remain bullish on Indian manufacturing stocks and infrastructure plays.</p></div></div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>PMI above 55 = very strong expansion — bullish for industrial and manufacturing stocks</li><li>PMI dropping towards 50 = warning sign — reduce cyclical exposure</li><li>Services PMI is critical for India's IT and banking sectors</li><li>PMI is released monthly — mark the first Monday of every month</li><li>PMI is a leading indicator — it predicts GDP trends 1–2 quarters ahead</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('pmi', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('fiscal')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Fiscal Policy</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('sectors')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Financial Markets & Sectors</div></button>
+  </div>
+</section>
+
+<!-- ===== SECTORS ===== -->
+<section class="page" id="page-sectors">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Financial Markets</a> <span>›</span> Sectors</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#E0F2FE;color:#0369A1">Markets</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 8 min read</span></div>
+    <h1>Primary, Secondary & Tertiary Sectors</h1>
+    <div class="lesson-summary">Every economy is divided into three broad sectors. Understanding which sector drives what — and how they interact — helps investors identify where the real growth opportunities lie.</div>
+  </div>
+  <div class="lesson-body">
+    <div class="sector-grid">
+      <div class="sector-card">
+        <div class="sector-icon">🌾</div>
+        <div class="sector-title">Primary Sector</div>
+        <div class="sector-desc">Extraction of natural resources — farming, fishing, mining, forestry. Highly dependent on monsoons, climate, and government policies like MSP.</div>
+        <div class="sector-gdp">~17–18% of India's GDP</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏭</div>
+        <div class="sector-title">Secondary Sector</div>
+        <div class="sector-desc">Converts raw materials into finished goods — factories, construction, textiles, steel, automobiles, pharmaceuticals. Linked to IIP data.</div>
+        <div class="sector-gdp">~25–30% of India's GDP</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">💻</div>
+        <div class="sector-title">Tertiary Sector</div>
+        <div class="sector-desc">Services — IT, banking, telecom, healthcare, tourism, retail. India's largest GDP contributor, driven by massive IT exports and financial services.</div>
+        <div class="sector-gdp">~55–60% of India's GDP</div>
+      </div>
+    </div>
+    <h2>How Sectors Impact Your Portfolio</h2>
+    <table class="data-table">
+      <thead><tr><th>Sector</th><th>Key Companies</th><th>Market Sensitivity</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>Primary (Agro)</td><td>ITC, UPL, Coromandel</td><td>Weather & policy dependent</td><td>Diversification hedge</td></tr>
+        <tr><td>Manufacturing</td><td>Tata Steel, L&T, Maruti</td><td>Highly cyclical — GDP linked</td><td>Bull market phases</td></tr>
+        <tr><td>IT Services</td><td>TCS, Infosys, Wipro</td><td>USD revenue — global cycle dependent</td><td>Long-term wealth creation</td></tr>
+        <tr><td>Banking & Finance</td><td>HDFC Bank, ICICI, SBI</td><td>Interest rate sensitive</td><td>Core portfolio holding</td></tr>
+        <tr><td>Healthcare/Pharma</td><td>Sun Pharma, Dr Reddy's</td><td>Defensive — less cyclical</td><td>Bear market protection</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-info"><div class="callout-icon">📌</div><div class="callout-content"><p><strong>Sector Rotation Strategy:</strong> Smart investors rotate capital between sectors based on economic cycles. When GDP is rising, move towards cyclicals. As growth peaks, shift to defensives. This is the foundation of sector rotation investing.</p></div></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('sectors', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('pmi')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">PMI</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('indices')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">NIFTY, SENSEX & Indices</div></button>
+  </div>
+</section>
+
+<!-- ===== INDICES ===== -->
+<section class="page" id="page-indices">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Financial Markets</a> <span>›</span> Indices</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#E0F2FE;color:#0369A1">Markets</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 7 min read</span></div>
+    <h1>Stock Market Indices — NIFTY, SENSEX & More</h1>
+    <div class="lesson-summary">Stock indices are the market's report card — they tell you instantly whether the overall market is up, down, or sideways. NIFTY and SENSEX are the two benchmark indices that every Indian investor must understand.</div>
+  </div>
+  <div class="lesson-body">
+    <div class="index-grid">
+      <div class="index-card">
+        <h4>NIFTY 50</h4>
+        <div class="exchange">NSE (National Stock Exchange)</div>
+        <div class="companies">50</div>
+        <div class="companies-label">Top Companies</div>
+        <p>Benchmark index for India's stock market. Covers 13 sectors. Market cap weighted. Used for F&O trading and index funds.</p>
+      </div>
+      <div class="index-card">
+        <h4>SENSEX</h4>
+        <div class="exchange">BSE (Bombay Stock Exchange)</div>
+        <div class="companies">30</div>
+        <div class="companies-label">Top Companies</div>
+        <p>India's oldest index. Free-float market cap weighted. Strong indicator of overall market sentiment. Asia's oldest exchange.</p>
+      </div>
+      <div class="index-card">
+        <h4>NIFTY Midcap 150</h4>
+        <div class="exchange">NSE</div>
+        <div class="companies">150</div>
+        <div class="companies-label">Mid-size Companies</div>
+        <p>Tracks mid-cap companies — typically higher growth potential but more volatility than large caps.</p>
+      </div>
+      <div class="index-card">
+        <h4>NIFTY Smallcap 250</h4>
+        <div class="exchange">NSE</div>
+        <div class="companies">250</div>
+        <div class="companies-label">Small Companies</div>
+        <p>Tracks small-cap companies — highest growth potential but also highest risk. For experienced investors.</p>
+      </div>
+    </div>
+    <h2>What Moves an Index?</h2>
+    <p>Indices are market-cap weighted — meaning larger companies have a bigger impact on the index's movement. For NIFTY 50, companies like Reliance Industries, HDFC Bank, and TCS can single-handedly move the index significantly.</p>
+    <table class="data-table">
+      <thead><tr><th>Factor</th><th>Effect on Index</th></tr></thead>
+      <tbody>
+        <tr><td>Strong GDP data</td><td>Bullish — index rises</td></tr>
+        <tr><td>RBI rate cut</td><td>Bullish — cheaper borrowing boosts valuations</td></tr>
+        <tr><td>FII selling</td><td>Bearish — large foreign outflows push index down</td></tr>
+        <tr><td>Good corporate earnings</td><td>Bullish — EPS growth drives P/E expansion</td></tr>
+        <tr><td>Global crisis (US recession, war)</td><td>Bearish — India sells off in risk-off sentiment</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('indices', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('sectors')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Sectors</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('bull-bear')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Bull & Bear Markets</div></button>
+  </div>
+</section>
+
+<!-- ===== BULL BEAR ===== -->
+<section class="page" id="page-bull-bear">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Financial Markets</a> <span>›</span> Bull & Bear</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#E0F2FE;color:#0369A1">Markets</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 6 min read</span></div>
+    <h1>Bull & Bear Markets</h1>
+    <div class="lesson-summary">Bull and bear markets are the two dominant phases of the market cycle. Knowing which one you're in determines your entire investment strategy — what to buy, what to sell, and when to hold.</div>
+  </div>
+  <div class="lesson-body">
+    <div class="compare-grid">
+      <div class="compare-card bull">
+        <h4>🐂 Bull Market</h4>
+        <ul>
+          <li>Stock prices consistently rising (20%+ from recent lows)</li>
+          <li>Strong GDP and corporate earnings growth</li>
+          <li>High investor confidence and risk appetite</li>
+          <li>Low unemployment; consumers spending freely</li>
+          <li>Interest rates may be stable or declining</li>
+          <li>FII inflows are strong</li>
+        </ul>
+      </div>
+      <div class="compare-card bear">
+        <h4>🐻 Bear Market</h4>
+        <ul>
+          <li>Stock prices fall 20%+ from recent highs</li>
+          <li>Economic slowdown or recession signals</li>
+          <li>Declining corporate earnings</li>
+          <li>Rising unemployment and weak consumption</li>
+          <li>FII outflows, risk-off sentiment</li>
+          <li>Volatility spikes (VIX rises sharply)</li>
+        </ul>
+      </div>
+    </div>
+    <h2>Strategy for Each Phase</h2>
+    <table class="data-table">
+      <thead><tr><th>Market Phase</th><th>Investor Strategy</th><th>Sectors to Focus On</th></tr></thead>
+      <tbody>
+        <tr><td>Early Bull</td><td>Buy aggressively — maximum opportunity</td><td>Cyclicals: Banking, Auto, Infrastructure</td></tr>
+        <tr><td>Mid Bull</td><td>Hold and let winners run</td><td>Broad market exposure; technology</td></tr>
+        <tr><td>Late Bull</td><td>Take partial profits, tighten stops</td><td>Reduce cyclicals, add defensives</td></tr>
+        <tr><td>Early Bear</td><td>Reduce equity exposure, add hedges</td><td>Defensives: FMCG, Pharma, IT</td></tr>
+        <tr><td>Deep Bear</td><td>Accumulate quality stocks at discounts</td><td>Blue chips, dividend-paying stocks</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-warning"><div class="callout-icon">📊</div><div class="callout-content"><p><strong>Market Correction vs Bear Market:</strong> A correction is a 10–20% decline — normal and healthy. A bear market is 20%+ decline — more serious and typically lasts months to years. Don't panic in corrections; they are buying opportunities.</p></div></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('bull-bear', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('indices')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Indices</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('exchanges')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">NSE & BSE</div></button>
+  </div>
+</section>
+
+<!-- ===== EXCHANGES ===== -->
+<section class="page" id="page-exchanges">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Financial Markets</a> <span>›</span> Exchanges</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#E0F2FE;color:#0369A1">Markets</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 5 min read</span></div>
+    <h1>NSE & BSE — India's Stock Exchanges</h1>
+    <div class="lesson-summary">NSE and BSE are the two primary stock exchanges where Indian companies list their shares and where buyers and sellers meet. Understanding how they work is fundamental to stock market participation.</div>
+  </div>
+  <div class="lesson-body">
+    <div class="compare-grid">
+      <div class="compare-card" style="border-top: 3px solid var(--accent-blue);">
+        <h4 style="color:var(--accent-blue);">NSE — National Stock Exchange</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Founded: 1992 | Operational: 1994</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Benchmark: NIFTY 50</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Fully electronic (no open outcry)</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Dominates F&O (derivatives) trading</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Higher daily volumes vs BSE</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-top: 3px solid #DC2626;">
+        <h4 style="color:#DC2626;">BSE — Bombay Stock Exchange</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Founded: 1875 — Asia's oldest exchange</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Benchmark: SENSEX (30 stocks)</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Over 5,000 listed companies</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">SME exchange for small companies</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary);">Electronic trading since 1995</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-info"><div class="callout-icon">⏰</div><div class="callout-content"><p><strong>Trading Hours:</strong> Both NSE & BSE operate Monday to Friday, 9:15 AM to 3:30 PM IST. Pre-open session: 9:00 AM – 9:15 AM. Post-market session: 3:40 PM – 4:00 PM.</p></div></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('exchanges', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('bull-bear')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Bull & Bear Markets</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('revenue')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Revenue & Earnings Growth</div></button>
+  </div>
+</section>
+
+<!-- ===== REVENUE ===== -->
+<section class="page" id="page-revenue">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Fundamentals</a> <span>›</span> Revenue Growth</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-orange">Fundamentals</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 10 min read</span></div>
+    <h1>Revenue & Earnings Growth</h1>
+    <div class="lesson-summary">Revenue is the lifeblood of any business. Earnings are the proof of its quality. Together, they are the two most important metrics for evaluating whether a company deserves a place in your portfolio.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. Revenue Growth (Top-Line)</h2>
+    <p>Revenue (also called <em>sales</em> or <em>turnover</em>) is the total money a company earns from selling its products or services — before any expenses are deducted. Revenue growth measures how much sales have increased over time.</p>
+    <div class="formula-box">
+      <span class="formula-label">Revenue Growth Formula</span>
+      <div class="formula-main">Revenue Growth (%) = <span class="formula-frac"><span class="formula-num">Current Revenue − Previous Revenue</span><span>Previous Revenue</span></span> × 100</div>
+    </div>
+    <div class="example-block">
+      <div class="example-header">📋 Example — Revenue Growth Calculation</div>
+      <div class="example-body">
+        <p>Company A had revenue of ₹1,000 crore last year and ₹1,200 crore this year.</p>
+        <p><strong>Revenue Growth = (1200 − 1000) ÷ 1000 × 100 = 20%</strong></p>
+        <p>✅ 20% revenue growth is excellent — the company is expanding rapidly. Look for consistency over 3–5 years, not just one quarter.</p>
+      </div>
+    </div>
+    <h2>2. Earnings Growth (Bottom-Line)</h2>
+    <p>Earnings (or <em>Net Profit</em>) is what remains after deducting all expenses, taxes, and costs from revenue. It tells you how efficiently the company runs its business.</p>
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th>What It Measures</th><th>Indicates</th><th>Investor Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue Growth</td><td>Sales increase</td><td>Demand for products</td><td>Higher revenue = strong market presence</td></tr>
+        <tr><td>Earnings Growth</td><td>Profit increase</td><td>Efficiency & profitability</td><td>Higher earnings = better shareholder returns</td></tr>
+        <tr><td>OPM (Operating Profit Margin)</td><td>% revenue becoming operating profit</td><td>Operational efficiency</td><td>Expanding margins = improving business quality</td></tr>
+      </tbody>
+    </table>
+    <div class="formula-box">
+      <span class="formula-label">Operating Profit Margin (OPM)</span>
+      <div class="formula-main">OPM = <span class="formula-frac"><span class="formula-num">Operating Profit</span><span>Revenue</span></span> × 100</div>
+    </div>
+    <div class="callout callout-warning"><div class="callout-icon">⚠️</div><div class="callout-content"><p><strong>Red Flag:</strong> High revenue growth with shrinking OPM means the company is growing sales but becoming less profitable. This often signals pricing pressure, rising costs, or unsustainable discounting.</p></div></div>
+    <div class="callout callout-info"><div class="callout-icon">💡</div><div class="callout-content"><p>"Consistent growth is more powerful than occasional spikes." — Warren Buffett. Always prefer companies with 5+ years of consistent 15–20% revenue and earnings growth over one-time windfalls.</p></div></div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>Look for 15–20%+ consistent revenue growth over 3–5 years for strong growth companies</li><li>Earnings growth should outpace revenue growth — sign of improving margins</li><li>OPM expansion = business quality is improving</li><li>Compare within same industry — a 10% growth rate can be excellent in FMCG, mediocre in software</li><li>Track both QoQ (quarter-on-quarter) and YoY (year-on-year) for full picture</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('revenue', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('exchanges')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">NSE & BSE</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('pe-ratio')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">P/E Ratio</div></button>
+  </div>
+</section>
+
+<!-- ===== P/E RATIO ===== -->
+<section class="page" id="page-pe-ratio">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Fundamentals</a> <span>›</span> P/E Ratio</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-orange">Fundamentals</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 10 min read</span></div>
+    <h1>Price-to-Earnings (P/E) Ratio</h1>
+    <div class="lesson-summary">The P/E ratio is the single most widely used valuation metric in investing. It tells you how much the market is willing to pay for every rupee of a company's earnings — and whether a stock is cheap or expensive.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. The Formula</h2>
+    <div class="formula-box">
+      <span class="formula-label">P/E Ratio Formula</span>
+      <div class="formula-main">P/E = <span class="formula-frac"><span class="formula-num">Market Price per Share</span><span>Earnings per Share (EPS)</span></span></div>
+    </div>
+    <p>Where:</p>
+    <ul>
+      <li><strong>Market Price per Share</strong> → The current trading price of the stock</li>
+      <li><strong>EPS (Earnings per Share)</strong> → Net profit ÷ Total outstanding shares</li>
+    </ul>
+    <h2>2. How to Interpret P/E</h2>
+    <table class="data-table">
+      <thead><tr><th>P/E Range</th><th>Interpretation</th><th>Typical Sectors</th></tr></thead>
+      <tbody>
+        <tr><td>&lt; 10</td><td>Very cheap — possible value trap or slow growth</td><td>PSUs, commodity stocks</td></tr>
+        <tr><td>10 – 20</td><td>Fairly valued — reasonable for stable businesses</td><td>Banking, manufacturing</td></tr>
+        <tr><td>20 – 35</td><td>Growth premium — market expects strong future growth</td><td>Consumer, mid-cap tech</td></tr>
+        <tr><td>35 – 60</td><td>High growth expectations — buy carefully</td><td>IT, specialty chemicals</td></tr>
+        <tr><td>&gt; 60</td><td>Speculative — very high growth baked in; risky</td><td>Early-stage growth companies</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-warning"><div class="callout-icon">⚠️</div><div class="callout-content"><p><strong>Never use P/E in isolation!</strong> Always compare P/E against: (1) the company's own historical P/E, (2) sector peer P/E, and (3) overall market P/E. A P/E of 30 could be cheap for a tech company growing at 40% but expensive for a utility growing at 5%.</p></div></div>
+    <div class="example-block">
+      <div class="example-header">📋 Example</div>
+      <div class="example-body">
+        <p>Stock price: ₹500 | EPS: ₹25 → <strong>P/E = 500 ÷ 25 = 20x</strong></p>
+        <p>If the sector average P/E is 25x, this stock trades at a <strong>20% discount to peers</strong> — potentially undervalued. If the sector P/E is 15x, the stock trades at a <strong>33% premium</strong> — needs stronger growth justification.</p>
+      </div>
+    </div>
+
+    <div class="calculator-card">
+      <div class="calculator-title"><span>🧮</span> P/E Ratio Calculator</div>
+      <p class="calc-desc">Enter a stock's share price and EPS to calculate its P/E ratio and see how it compares.</p>
+      <div class="calc-grid">
+        <div class="calc-field"><label>Market Price per Share (₹)</label><input type="number" id="pe-price" placeholder="e.g. 500" min="0"></div>
+        <div class="calc-field"><label>Earnings per Share — EPS (₹)</label><input type="number" id="pe-eps" placeholder="e.g. 25" min="0.01"></div>
+      </div>
+      <button class="calc-btn" onclick="calcPE()">Calculate P/E Ratio</button>
+      <div class="calc-result" id="pe-result">
+        <div><div class="calc-result-label">P/E Ratio</div><div class="calc-result-interpret" id="pe-interpret"></div></div>
+        <div class="calc-result-value" id="pe-value"></div>
+      </div>
+    </div>
+
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>P/E shows how much you pay for ₹1 of earnings — lower is generally cheaper</li><li>Always compare P/E with sector peers, not across different industries</li><li>Forward P/E (using projected earnings) is often more useful than trailing P/E</li><li>A low P/E can mean cheap value — or declining business. Always check earnings quality!</li><li>NIFTY 50 long-term average P/E is around 20–22x — use as benchmark for market valuation</li></ul></div>
+  </div>
+
+  <div class="quiz-section">
+    <h3 class="quiz-title">🧠 Quick Quiz</h3>
+    <div class="quiz-q">
+      <p class="quiz-q-text">A stock trades at ₹300 and has an EPS of ₹20. What is its P/E ratio?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">10x</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">20x</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'correct')">15x</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">25x</button>
+      </div>
+      <div class="quiz-feedback">P/E = 300 ÷ 20 = 15x. Fairly valued for most stable sectors in India.</div>
+    </div>
+  </div>
+
+  <button class="mark-complete-btn" onclick="markComplete('pe-ratio', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('revenue')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Revenue Growth</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('pb-ratio')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Book Value & P/B Ratio</div></button>
+  </div>
+</section>
+
+<!-- ===== P/B RATIO ===== -->
+<section class="page" id="page-pb-ratio">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Fundamentals</a> <span>›</span> P/B Ratio</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-orange">Fundamentals</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 8 min read</span></div>
+    <h1>Book Value & Price-to-Book (P/B) Ratio</h1>
+    <div class="lesson-summary">Book value is what a company would be worth if it liquidated today. The P/B ratio compares the market's valuation to this intrinsic worth — revealing whether investors are paying a fair price for the assets they own.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. What is Book Value?</h2>
+    <p>Book Value represents the total value of a company's assets minus its liabilities — essentially, the net worth of the company as recorded in its balance sheet.</p>
+    <div class="formula-box">
+      <span class="formula-label">Book Value Formula</span>
+      <div class="formula-main">Book Value = Total Assets − Total Liabilities</div>
+      <div style="margin-top:12px;font-size:18px;">Book Value per Share = <span class="formula-frac" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle"><span style="border-bottom:2px solid currentColor;padding-bottom:3px;margin-bottom:3px;">Total Book Value</span><span>Total Outstanding Shares</span></span></div>
+    </div>
+    <h2>2. The P/B Ratio</h2>
+    <div class="formula-box">
+      <span class="formula-label">P/B Ratio Formula</span>
+      <div class="formula-main">P/B = <span class="formula-frac"><span class="formula-num">Market Price per Share</span><span>Book Value per Share</span></span></div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>P/B Ratio</th><th>Meaning</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>P/B &lt; 1</td><td>Trading below book value — potentially undervalued</td><td>Value investors (Buffett style)</td></tr>
+        <tr><td>P/B = 1 – 2</td><td>Fairly valued — market pays close to book</td><td>Banks, asset-heavy businesses</td></tr>
+        <tr><td>P/B = 2 – 5</td><td>Growth premium — strong ROE justifies premium</td><td>Quality growth businesses</td></tr>
+        <tr><td>P/B &gt; 10</td><td>Very high — intangible assets or speculative</td><td>Technology, brand-heavy companies</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-info"><div class="callout-icon">🏦</div><div class="callout-content"><p><strong>P/B is especially useful for banks.</strong> Unlike tech companies with huge intangibles, banks hold tangible assets (loans, cash, bonds). A P/B below 1.5x for a high-quality bank is often considered attractive.</p></div></div>
+    <div class="calculator-card">
+      <div class="calculator-title"><span>📚</span> P/B Ratio Calculator</div>
+      <p class="calc-desc">Calculate a stock's P/B ratio to assess if it's trading above or below its intrinsic asset value.</p>
+      <div class="calc-grid">
+        <div class="calc-field"><label>Market Price per Share (₹)</label><input type="number" id="pb-price" placeholder="e.g. 800" min="0"></div>
+        <div class="calc-field"><label>Book Value per Share (₹)</label><input type="number" id="pb-bvps" placeholder="e.g. 400" min="0.01"></div>
+      </div>
+      <button class="calc-btn" onclick="calcPB()">Calculate P/B Ratio</button>
+      <div class="calc-result" id="pb-result">
+        <div><div class="calc-result-label">P/B Ratio</div><div class="calc-result-interpret" id="pb-interpret"></div></div>
+        <div class="calc-result-value" id="pb-value"></div>
+      </div>
+    </div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>P/B below 1 can indicate undervaluation — but always check WHY (declining business or genuine bargain?)</li><li>High-ROE companies often trade at high P/B — they generate more value than just their assets</li><li>P/B is less useful for service/tech companies with large intangible assets</li><li>Best used alongside P/E and ROE for a complete picture</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('pb-ratio', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('pe-ratio')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">P/E Ratio</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('de-ratio')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Debt-to-Equity Ratio</div></button>
+  </div>
+</section>
+
+<!-- ===== D/E RATIO ===== -->
+<section class="page" id="page-de-ratio">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Fundamentals</a> <span>›</span> D/E Ratio</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-orange">Fundamentals</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 8 min read</span></div>
+    <h1>Debt-to-Equity (D/E) Ratio</h1>
+    <div class="lesson-summary">Debt is a double-edged sword. The right amount amplifies growth; too much destroys companies. The D/E ratio tells you exactly how much a company relies on borrowed money versus its own capital.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. The Formula</h2>
+    <div class="formula-box">
+      <span class="formula-label">Debt-to-Equity Ratio</span>
+      <div class="formula-main">D/E = <span class="formula-frac"><span class="formula-num">Total Debt</span><span>Total Shareholders' Equity</span></span></div>
+    </div>
+    <p>Where Total Debt includes both short-term borrowings (repayable within 1 year) and long-term debt (repayable after 1 year).</p>
+    <h2>2. Reading the D/E Ratio</h2>
+    <table class="data-table">
+      <thead><tr><th>D/E Ratio</th><th>What It Means</th><th>Risk Level</th></tr></thead>
+      <tbody>
+        <tr><td>D/E = 0</td><td>Debt-free — fully equity funded</td><td>Very low (but may miss leverage benefits)</td></tr>
+        <tr><td>D/E &lt; 0.5</td><td>Conservatively funded — low debt burden</td><td>Low</td></tr>
+        <tr><td>D/E = 0.5 – 1.0</td><td>Moderate debt — manageable</td><td>Medium — watch carefully</td></tr>
+        <tr><td>D/E = 1.0 – 2.0</td><td>High debt — earnings must cover interest</td><td>High — sector context critical</td></tr>
+        <tr><td>D/E &gt; 2.0</td><td>Very high debt — risky, especially in downturns</td><td>Very high — avoid unless strong cash flows</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-info"><div class="callout-icon">⚠️</div><div class="callout-content"><p><strong>Context is everything.</strong> D/E of 3x is dangerous for a retail company but normal for an infrastructure or utility company with stable, long-term cash flows. Always benchmark within the sector.</p></div></div>
+    <div class="calculator-card">
+      <div class="calculator-title"><span>⚖️</span> D/E Ratio Calculator</div>
+      <p class="calc-desc">Measure how leveraged a company is relative to its shareholders' equity.</p>
+      <div class="calc-grid">
+        <div class="calc-field"><label>Total Debt (₹ Crore)</label><input type="number" id="de-debt" placeholder="e.g. 500" min="0"></div>
+        <div class="calc-field"><label>Total Shareholders' Equity (₹ Crore)</label><input type="number" id="de-equity" placeholder="e.g. 1000" min="0.01"></div>
+      </div>
+      <button class="calc-btn" onclick="calcDE()">Calculate D/E Ratio</button>
+      <div class="calc-result" id="de-result">
+        <div><div class="calc-result-label">D/E Ratio</div><div class="calc-result-interpret" id="de-interpret"></div></div>
+        <div class="calc-result-value" id="de-value"></div>
+      </div>
+    </div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>Debt-free or low-debt companies (D/E &lt; 0.5) are generally safer during recessions</li><li>High-debt companies face default risk when earnings fall — they still owe interest</li><li>Banks have naturally high D/E (they use depositor funds as "debt") — don't apply the same standards</li><li>Check interest coverage ratio alongside D/E — company needs profits to service debt</li><li>Rising D/E over time = company is taking on more risk — investigate why</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('de-ratio', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('pb-ratio')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">P/B Ratio</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('roe-roce')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">ROE & ROCE</div></button>
+  </div>
+</section>
+
+<!-- ===== ROE & ROCE ===== -->
+<section class="page" id="page-roe-roce">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Fundamentals</a> <span>›</span> ROE & ROCE</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-orange">Fundamentals</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 9 min read</span></div>
+    <h1>Return on Equity (ROE) & Return on Capital Employed (ROCE)</h1>
+    <div class="lesson-summary">ROE and ROCE measure how efficiently a company uses its capital to generate profits. These are the ultimate tests of business quality — Warren Buffett uses consistent high ROE as one of his primary stock selection criteria.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. Return on Equity (ROE)</h2>
+    <p>ROE measures how much profit a company generates for every rupee of shareholders' equity. It tells you how efficiently management is using your invested capital.</p>
+    <div class="formula-box">
+      <span class="formula-label">ROE Formula</span>
+      <div class="formula-main">ROE = <span class="formula-frac"><span class="formula-num">Net Profit (PAT)</span><span>Shareholders' Equity</span></span> × 100</div>
+    </div>
+    <h2>2. Return on Capital Employed (ROCE)</h2>
+    <p>ROCE is more comprehensive than ROE — it measures profitability against <em>all</em> capital used (both equity and debt), giving a cleaner picture of operational efficiency.</p>
+    <div class="formula-box">
+      <span class="formula-label">ROCE Formula</span>
+      <div class="formula-main">ROCE = <span class="formula-frac"><span class="formula-num">EBIT (Earnings Before Interest & Tax)</span><span>Total Capital Employed (Debt + Equity)</span></span> × 100</div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Threshold</th><th>ROE Interpretation</th><th>ROCE Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>&lt; 10%</td><td>Poor — below cost of capital</td><td>Poor — not covering capital costs</td></tr>
+        <tr><td>10–15%</td><td>Average — acceptable for stable businesses</td><td>Adequate</td></tr>
+        <tr><td>15–20%</td><td>Good — healthy and sustainable</td><td>Good — strong efficiency</td></tr>
+        <tr><td>&gt; 20%</td><td>Excellent — premium quality company</td><td>Excellent — exceptional capital allocator</td></tr>
+      </tbody>
+    </table>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-top:3px solid var(--accent-blue)">
+        <h4 style="color:var(--accent-blue)">ROE — Good For</h4>
+        <ul style="list-style:none;padding:0">
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Comparing companies in same sector</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Evaluating shareholder value creation</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Quick quality screening</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-top:3px solid #8B5CF6">
+        <h4 style="color:#8B5CF6">ROCE — Better Because</h4>
+        <ul style="list-style:none;padding:0">
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Accounts for debt — avoids manipulation</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Compares capital-intensive businesses fairly</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Better for cross-sector comparison</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-success"><div class="callout-icon">🏆</div><div class="callout-content"><p>"Great businesses don't just earn profits; they maximize every rupee of capital employed. Efficiency is the true key to sustainable success." Look for ROCE consistently above 20% for 5+ years — this is the hallmark of a truly exceptional business.</p></div></div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>ROE &gt; 20% consistently for 5+ years = high-quality business (Buffett's test)</li><li>ROCE should ideally exceed the cost of capital (WACC) — otherwise the business destroys value</li><li>Rising ROE driven by increasing leverage is risky — check D/E together</li><li>Falling ROE despite profits = equity base expanding faster than profits (dilution)</li><li>India's best businesses (HDFC Bank, Asian Paints, TCS) consistently deliver 20%+ ROE</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('roe-roce', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('de-ratio')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">D/E Ratio</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('cash-flow')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Cash Flow Analysis</div></button>
+  </div>
+</section>
+
+<!-- ===== CASH FLOW ===== -->
+<section class="page" id="page-cash-flow">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Fundamentals</a> <span>›</span> Cash Flow</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag tag-orange">Fundamentals</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 9 min read</span></div>
+    <h1>Cash Flow & Its Importance in Investment Analysis</h1>
+    <div class="lesson-summary">"Revenue is vanity, profit is sanity, but cash flow is reality." Earnings can be manipulated by accounting techniques — but cash is harder to fake. Free cash flow is the true measure of a company's financial strength.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. The Three Types of Cash Flow</h2>
+    <table class="data-table">
+      <thead><tr><th>Type</th><th>What It Measures</th><th>Healthy Sign</th><th>Red Flag</th></tr></thead>
+      <tbody>
+        <tr><td>Operating Cash Flow (OCF)</td><td>Cash from core business operations</td><td>Positive and growing</td><td>Persistently negative</td></tr>
+        <tr><td>Investing Cash Flow (ICF)</td><td>Cash used for investments (capex, acquisitions)</td><td>Negative = investing for growth</td><td>Selling assets = desperation</td></tr>
+        <tr><td>Financing Cash Flow (FCF)</td><td>Cash from loans, dividends, share issuances</td><td>Balanced</td><td>Constantly raising debt</td></tr>
+      </tbody>
+    </table>
+    <h2>2. Free Cash Flow (FCF)</h2>
+    <div class="formula-box">
+      <span class="formula-label">Free Cash Flow Formula</span>
+      <div class="formula-main">FCF = Operating Cash Flow − Capital Expenditure (CapEx)</div>
+    </div>
+    <p>FCF is the cash a company generates after maintaining and expanding its asset base. This is the money available for dividends, buybacks, debt repayment, or acquisitions.</p>
+    <div class="callout callout-success"><div class="callout-icon">💰</div><div class="callout-content"><p><strong>The Best Companies Generate Consistent FCF.</strong> Companies like Infosys, HDFC Bank, and Bajaj Finance generate strong free cash flow year after year — this is why they can pay dividends, buy back shares, and grow without needing to constantly raise external capital.</p></div></div>
+    <div class="callout callout-danger"><div class="callout-icon">🚨</div><div class="callout-content"><p><strong>Warning Signs in Cash Flow:</strong> If a company reports growing net profits but declining operating cash flow — something is wrong. Revenue might be recorded before cash is received, or inventory is bloating, or creditors aren't being paid.</p></div></div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>Always compare net profit with operating cash flow — they should move in the same direction</li><li>Strong FCF = company can self-fund growth without constant debt or dilution</li><li>Cash-rich companies with no debt are best positioned in recessions and crises</li><li>Dividend sustainability = check FCF, not just profits (dividends come from cash, not accounting profits)</li><li>Track FCF yield = FCF ÷ Market Cap — above 5% is often considered attractive</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('cash-flow', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('roe-roce')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">ROE & ROCE</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('fii-dii')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">FIIs & DIIs</div></button>
+  </div>
+</section>
+
+<!-- ===== FII DII ===== -->
+<section class="page" id="page-fii-dii">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Investment Strategies</a> <span>›</span> FIIs & DIIs</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#F3E8FF;color:#7C3AED">Strategies</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 9 min read</span></div>
+    <h1>FIIs & DIIs — The Market Movers</h1>
+    <div class="lesson-summary">Understanding who is buying and who is selling is one of the most powerful edges a retail investor can have. FIIs and DIIs are the giant hands that move India's markets — tracking their activity can help you stay on the right side of the trend.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. Who Are They?</h2>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-top:3px solid #1D4ED8">
+        <h4 style="color:#1D4ED8">FIIs 🌍</h4>
+        <ul style="list-style:none;padding:0">
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)"><strong>Foreign Institutional Investors</strong></li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Hedge funds, sovereign wealth funds, asset managers from outside India</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">React to global signals (US Fed, dollar strength, oil prices)</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Can move billions in/out quickly</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">High impact on large-cap indices</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-top:3px solid #16A34A">
+        <h4 style="color:#16A34A">DIIs 🏦</h4>
+        <ul style="list-style:none;padding:0">
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)"><strong>Domestic Institutional Investors</strong></li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Mutual funds, LIC, banks, pension funds within India</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">React to domestic flows (SIPs, insurance premiums)</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">More stable — provide market floor during FII selling</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Rising rapidly due to SIP culture in India</li>
+        </ul>
+      </div>
+    </div>
+    <h2>2. Why FII/DII Data Matters</h2>
+    <table class="data-table">
+      <thead><tr><th>Signal</th><th>What It Means</th><th>Market Impact</th></tr></thead>
+      <tbody>
+        <tr><td>High FII Inflows</td><td>Global confidence in India's economy</td><td>Bullish — NIFTY/SENSEX rise</td></tr>
+        <tr><td>High FII Outflows</td><td>Global risk-off or better opportunities elsewhere</td><td>Bearish — selling pressure</td></tr>
+        <tr><td>DII Buying during FII selling</td><td>Indian institutions stepping in as buyers</td><td>Market floor — limits downside</td></tr>
+        <tr><td>Both FII + DII selling</td><td>Serious risk-off; domestic panic too</td><td>Strong bearish signal</td></tr>
+        <tr><td>Both FII + DII buying</td><td>Broad confidence — domestic + global</td><td>Very bullish — sustained rally likely</td></tr>
+      </tbody>
+    </table>
+    <div class="example-block">
+      <div class="example-header">📋 Real Examples</div>
+      <div class="example-body">
+        <p><strong>Yes Bank (2018–2020):</strong> Retail investors bought as the price fell, thinking it was cheap. FIIs and DIIs were quietly selling due to financial instability. The stock crashed from ₹400+ to ₹10, trapping retail investors.</p>
+        <p><strong>HDFC Bank (Long-term):</strong> FIIs and DIIs have consistently accumulated HDFC Bank for decades due to its superior management, clean asset quality, and strong ROE. The stock has delivered 20%+ CAGR over 20+ years.</p>
+      </div>
+    </div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>Check NSE's daily FII/DII data — it's publicly available and invaluable</li><li>Sustained FII inflows over 3–6 months = structural bull market in India</li><li>FII outflows + rupee weakening = double pressure on markets; stay cautious</li><li>Rising SIP contributions have made DIIs increasingly powerful market stabilisers</li><li>Follow institutions — they do deeper research than 99% of retail investors</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('fii-dii', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('cash-flow')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Cash Flow</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('retail-vs-inst')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Retail vs Institutional</div></button>
+  </div>
+</section>
+
+<!-- ===== RETAIL VS INST ===== -->
+<section class="page" id="page-retail-vs-inst">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Investment Strategies</a> <span>›</span> Retail vs Institutional</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#F3E8FF;color:#7C3AED">Strategies</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 7 min read</span></div>
+    <h1>Retail vs Institutional Investors</h1>
+    <div class="lesson-summary">The market is a game played at different scales. Understanding the difference between retail and institutional investors — and how each behaves — can help you avoid costly mistakes and learn from the strategies of the pros.</div>
+  </div>
+  <div class="lesson-body">
+    <table class="data-table">
+      <thead><tr><th>Factor</th><th>Retail Investors 👤</th><th>Institutional Investors 🏦</th></tr></thead>
+      <tbody>
+        <tr><td>Capital Size</td><td>Small — thousands to lakhs</td><td>Massive — crores to trillions</td></tr>
+        <tr><td>Research Depth</td><td>Limited — personal analysis</td><td>Extensive — dedicated research teams</td></tr>
+        <tr><td>Market Impact</td><td>Minimal price impact</td><td>Can move stock prices significantly</td></tr>
+        <tr><td>Information Access</td><td>Public data only</td><td>Management access, industry channels</td></tr>
+        <tr><td>Emotional Bias</td><td>High — prone to FOMO and panic</td><td>Lower — process-driven mandates</td></tr>
+        <tr><td>Focus</td><td>Mid/small caps, trending stocks</td><td>Blue chips, fundamentally strong stocks</td></tr>
+        <tr><td>Advantage</td><td>Agility, small-cap access, no mandate constraints</td><td>Data edge, lower costs, long time horizon</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-info"><div class="callout-icon">💡</div><div class="callout-content"><p><strong>The Retail Investor's Edge:</strong> You can invest in small and micro-cap stocks that institutions can't buy (too small for them). You have no redemption pressure. You can hold for 10+ years. These are real advantages — use them.</p></div></div>
+    <h2>How to Use Institutional Data as a Retail Investor</h2>
+    <ul>
+      <li>📌 <strong>Track shareholding patterns quarterly</strong> — increasing institutional holding = growing confidence in the company</li>
+      <li>📌 <strong>Follow FII/DII net data</strong> — available daily on NSE website</li>
+      <li>📌 <strong>Avoid FOMO trading</strong> — don't buy just because a stock is trending on social media</li>
+      <li>📌 <strong>Use fundamental analysis</strong> over emotional decisions</li>
+      <li>📌 <strong>Diversify like institutions</strong> — they hold 30–50+ stocks across sectors</li>
+    </ul>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('retail-vs-inst', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('fii-dii')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">FIIs & DIIs</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('ipo-fpo')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">IPO & FPO</div></button>
+  </div>
+</section>
+
+<!-- ===== IPO FPO ===== -->
+<section class="page" id="page-ipo-fpo">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Investment Strategies</a> <span>›</span> IPO & FPO</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#F3E8FF;color:#7C3AED">Strategies</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Intermediate</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 8 min read</span></div>
+    <h1>IPO & FPO — Initial & Follow-On Offerings</h1>
+    <div class="lesson-summary">Every publicly traded company was once private. The IPO is its first step into the public market — a moment of enormous opportunity and significant risk. Understanding the process separates smart applicants from those who blindly apply to every IPO.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. Initial Public Offering (IPO)</h2>
+    <p>An IPO is when a private company offers its shares to the general public for the first time via a stock exchange. It is the company's way of raising capital to fund growth, pay off debt, or provide an exit to early investors.</p>
+    <table class="data-table">
+      <thead><tr><th>Stage</th><th>What Happens</th><th>Your Role</th></tr></thead>
+      <tbody>
+        <tr><td>Pre-IPO</td><td>Company files DRHP (Draft Red Herring Prospectus) with SEBI</td><td>Read the DRHP — it reveals everything about the business</td></tr>
+        <tr><td>Price Band Set</td><td>Investment banks set a price range (e.g. ₹400–450)</td><td>Evaluate if price is fair based on fundamentals</td></tr>
+        <tr><td>Subscription Period</td><td>Open for 3–5 days — retail, QIB, NII categories apply</td><td>Submit application via ASBA through your bank/broker</td></tr>
+        <tr><td>Allotment</td><td>Shares allocated by lottery (if oversubscribed)</td><td>Check allotment status; shares credited to demat</td></tr>
+        <tr><td>Listing Day</td><td>Stock lists on NSE/BSE — price discovery begins</td><td>Decide to hold for long term or book listing gains</td></tr>
+      </tbody>
+    </table>
+    <h2>2. Follow-On Public Offering (FPO)</h2>
+    <p>An FPO is when an already-listed company issues additional shares to the public. It's used to raise fresh capital for expansion, R&D, or debt reduction.</p>
+    <div class="callout callout-warning"><div class="callout-icon">⚠️</div><div class="callout-content"><p><strong>IPO Red Flags to Watch:</strong> (1) Entire offer for sale (OFS) by promoters — no fresh capital for growth (2) Very high P/E even vs sector peers (3) Declining revenue in the pre-IPO period (4) Heavy promoter pledging (5) Unclear use of IPO proceeds.</p></div></div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>Always read the DRHP — it's the most important IPO document, available on SEBI website</li><li>High subscription (50x, 100x) doesn't guarantee listing gains or long-term performance</li><li>Grey market premium (GMP) is an indicator of listing sentiment, not a guarantee</li><li>Best IPO strategy: buy fundamentally strong companies at fair valuations and hold 3–5 years</li><li>Notable Indian IPO successes: Zomato (long-term), IRCTC, Delhivery vs failures: Paytm, LIC (short-term)</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('ipo-fpo', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('retail-vs-inst')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Retail vs Institutional</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('mutual-funds')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">Mutual Funds & ETFs</div></button>
+  </div>
+</section>
+
+<!-- ===== MUTUAL FUNDS ===== -->
+<section class="page" id="page-mutual-funds">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Investment Strategies</a> <span>›</span> Mutual Funds</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#F3E8FF;color:#7C3AED">Strategies</span><span class="tag tag-green">Beginner</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 8 min read</span></div>
+    <h1>Mutual Funds & ETFs</h1>
+    <div class="lesson-summary">For most investors, mutual funds and ETFs are the most practical route to market participation — offering diversification, professional management, and low minimum investment. Understanding the types and costs helps you choose wisely.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. What is a Mutual Fund?</h2>
+    <p>A mutual fund pools money from thousands of investors and invests it in a diversified portfolio of stocks, bonds, or other assets — managed by a professional fund manager. Each investor owns units proportional to their investment.</p>
+    <h2>2. Types of Mutual Funds</h2>
+    <table class="data-table">
+      <thead><tr><th>Type</th><th>What It Invests In</th><th>Risk</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>Large Cap Funds</td><td>Top 100 companies (NIFTY 100)</td><td>Low–Medium</td><td>Conservative equity investors</td></tr>
+        <tr><td>Mid Cap Funds</td><td>101–250 ranked companies</td><td>Medium–High</td><td>5–7 year horizon investors</td></tr>
+        <tr><td>Small Cap Funds</td><td>251+ ranked companies</td><td>High</td><td>7–10 year horizon, risk tolerant</td></tr>
+        <tr><td>Flexi Cap Funds</td><td>Any market cap — fund manager decides</td><td>Moderate</td><td>Balanced approach</td></tr>
+        <tr><td>Index Funds</td><td>Tracks NIFTY 50, SENSEX etc.</td><td>Market risk only</td><td>Passive, low-cost investing</td></tr>
+        <tr><td>ELSS (Tax Saving)</td><td>Equity with 3-year lock-in</td><td>Market risk</td><td>Tax saving under Section 80C</td></tr>
+      </tbody>
+    </table>
+    <h2>3. ETFs vs Mutual Funds</h2>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-top:3px solid var(--accent-blue)">
+        <h4 style="color:var(--accent-blue)">ETF (Exchange Traded Fund)</h4>
+        <ul style="list-style:none;padding:0">
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Trades on stock exchange like a share</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Real-time pricing during market hours</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Very low expense ratio (0.05–0.2%)</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Need demat account to buy</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Best: NIFTY BeES, Nippon India ETFs</li>
+        </ul>
+      </div>
+      <div class="compare-card" style="border-top:3px solid #16A34A">
+        <h4 style="color:#16A34A">Mutual Fund</h4>
+        <ul style="list-style:none;padding:0">
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Priced at end-of-day NAV</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">SIP option makes investing automatic</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Higher expense ratio (0.5–2.5%)</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Can invest via direct or regular plans</li>
+          <li style="padding:5px 0;font-size:13px;color:var(--text-secondary)">Professional fund management</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-info"><div class="callout-icon">📊</div><div class="callout-content"><p><strong>SIP Power:</strong> A monthly SIP of ₹10,000 in a NIFTY 50 index fund for 20 years (assuming 12% annual returns) would grow to approximately ₹1 crore. Start early, stay consistent — time is your greatest ally.</p></div></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('mutual-funds', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('ipo-fpo')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">IPO & FPO</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('sebi')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">SEBI & Market Regulation</div></button>
+  </div>
+</section>
+
+<!-- ===== SEBI ===== -->
+<section class="page" id="page-sebi">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Regulatory Framework</a> <span>›</span> SEBI</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#FFF7ED;color:#C2410C">Regulatory</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Advanced</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 9 min read</span></div>
+    <h1>SEBI & Market Regulation</h1>
+    <div class="lesson-summary">SEBI is the invisible guardian of India's financial markets — ensuring transparency, protecting investors, and keeping markets fair. Without SEBI, scams and market manipulation would run rampant. Understanding its role gives you an edge most retail investors lack.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. What is SEBI?</h2>
+    <p>The Securities and Exchange Board of India (SEBI) was established in <strong>1988</strong> and given full statutory powers in <strong>1992</strong>. It serves as the primary regulator for India's capital markets — overseeing stock exchanges, brokers, mutual funds, FIIs, and listed companies.</p>
+    <h2>2. Key Functions of SEBI</h2>
+    <table class="data-table">
+      <thead><tr><th>Function</th><th>What SEBI Does</th></tr></thead>
+      <tbody>
+        <tr><td>🛡️ Investor Protection</td><td>Prevents fraud, insider trading, and misleading disclosures</td></tr>
+        <tr><td>📈 Market Regulation</td><td>Monitors NSE & BSE for fair, transparent operations</td></tr>
+        <tr><td>🏢 IPO Oversight</td><td>Reviews DRHP filings; mandates quarterly disclosures</td></tr>
+        <tr><td>💰 Broker Regulation</td><td>Licenses and monitors brokers, advisors, mutual fund managers</td></tr>
+        <tr><td>🌍 FII/DII Monitoring</td><td>Regulates foreign investment flows; prevents market concentration</td></tr>
+        <tr><td>⚡ Derivatives Control</td><td>Oversees futures & options market — ensures margin and risk control</td></tr>
+      </tbody>
+    </table>
+    <h2>3. Notable SEBI Actions</h2>
+    <div class="example-block">
+      <div class="example-header">📋 Real SEBI Interventions</div>
+      <div class="example-body">
+        <p>✅ <strong>2020:</strong> Banned Karvy Stock Broking for misusing client funds — returned crores to affected investors</p>
+        <p>✅ <strong>2021:</strong> Introduced T+1 settlement cycle for faster trade settlements — reduced counterparty risk</p>
+        <p>✅ <strong>2023:</strong> Investigated Adani Group over Hindenburg Research allegations — scrutinised offshore entities and related-party transactions</p>
+        <p>✅ <strong>2024:</strong> Tightened F&O regulations to protect retail traders from excessive speculation losses</p>
+      </div>
+    </div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>SEBI mandates mandatory disclosure of major shareholding changes — use this data to spot institutional moves</li><li>Insider trading is a serious SEBI offence — trading on material non-public information can lead to fines and imprisonment</li><li>SEBI's SCORES portal allows investors to file complaints against brokers or companies</li><li>SEBI tightening F&O rules = designed to protect retail traders from destructive leveraged speculation</li><li>Always use SEBI-registered brokers — verify registration on SEBI's website</li></ul></div>
+  </div>
+  <button class="mark-complete-btn" onclick="markComplete('sebi', this)">✓ Mark as Complete</button>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('mutual-funds')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">Mutual Funds</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('rbi')"><div class="nav-btn-label">Next →</div><div class="nav-btn-title">RBI & Monetary Policy</div></button>
+  </div>
+</section>
+
+<!-- ===== RBI ===== -->
+<section class="page" id="page-rbi">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a> <span>›</span> <a>Regulatory Framework</a> <span>›</span> RBI</div>
+  <div class="lesson-header">
+    <div class="lesson-meta"><span class="tag" style="background:#FFF7ED;color:#C2410C">Regulatory</span><span class="tag" style="background:#FEE2E2;color:#DC2626">Advanced</span><span class="tag" style="background:var(--bg-tertiary);color:var(--text-muted)">⏱ 9 min read</span></div>
+    <h1>RBI & Monetary Policy</h1>
+    <div class="lesson-summary">The Reserve Bank of India is India's central bank — the conductor of the entire financial orchestra. Every interest rate decision, currency intervention, and banking regulation flows from RBI. Every serious investor must understand how it operates.</div>
+  </div>
+  <div class="lesson-body">
+    <h2>1. About the RBI</h2>
+    <p>The Reserve Bank of India was established in <strong>1935</strong>. It manages India's monetary policy, regulates the banking system, manages foreign exchange reserves, and issues currency (all except the ₹1 note, which the government issues).</p>
+    <h2>2. Key RBI Functions</h2>
+    <table class="data-table">
+      <thead><tr><th>Function</th><th>Details</th><th>Market Impact</th></tr></thead>
+      <tbody>
+        <tr><td>📊 Monetary Policy</td><td>Sets repo rate, reverse repo rate, CRR, SLR</td><td>Directly impacts borrowing costs, stock valuations</td></tr>
+        <tr><td>🏦 Bank Regulation</td><td>Issues banking licenses, NPA norms, capital adequacy</td><td>Banking sector health and NIM</td></tr>
+        <tr><td>💵 Forex Management</td><td>Manages FX reserves (~$650B); controls rupee volatility</td><td>Exchange rate stability for FII flows</td></tr>
+        <tr><td>📈 Inflation Control</td><td>Uses OMO, CRR to inject/absorb liquidity</td><td>Controls inflation that drives rate decisions</td></tr>
+        <tr><td>💳 Payments Oversight</td><td>Regulates UPI, NEFT, RTGS, digital payments</td><td>Fintech and banking sector development</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-info"><div class="callout-icon">📅</div><div class="callout-content"><p><strong>RBI MPC Calendar:</strong> The Monetary Policy Committee meets 6 times per year — approximately every 2 months. Each meeting outcome (rate hold, cut, or hike) is a major market event. Set calendar reminders for these dates.</p></div></div>
+    <h2>3. How RBI Actions Move Markets</h2>
+    <div class="compare-grid">
+      <div class="compare-card bull"><h4>📉 Rate Cut / Dovish</h4>
+        <ul><li>Banks pass lower rates to borrowers</li><li>Home loans, auto loans become cheaper</li><li>Corporate earnings expectations rise</li><li>Real estate and auto stocks rally</li><li>Rupee may weaken slightly</li></ul>
+      </div>
+      <div class="compare-card bear"><h4>📈 Rate Hike / Hawkish</h4>
+        <ul><li>Borrowing becomes expensive</li><li>Loan growth slows; EMIs rise</li><li>Rate-sensitive sectors (real estate, auto) fall</li><li>Banks' NIMs improve but loan growth slows</li><li>Bond yields rise; debt funds affected</li></ul>
+      </div>
+    </div>
+    <div class="key-points"><h4>🎯 Key Takeaways</h4><ul><li>RBI's inflation target: 4% (band: 2–6%) — this drives all rate decisions</li><li>India's forex reserves (~$650B in 2024) give RBI strong firepower to defend the rupee</li><li>Rising CRR = banks have less money to lend = tighter credit conditions = bearish</li><li>RBI can also use moral suasion — verbal guidance from the Governor often moves markets</li><li>Follow RBI Governor's statement after each MPC meeting — tone matters as much as the decision</li></ul></div>
+  </div>
+
+  <div class="quiz-section">
+    <h3 class="quiz-title">🎓 Final Quiz — Regulatory Framework</h3>
+    <div class="quiz-q">
+      <p class="quiz-q-text">SEBI was established in which year and given statutory powers in which year?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">1992, 2000</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'correct')">1988, 1992</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">2000, 2005</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">1975, 1988</button>
+      </div>
+      <div class="quiz-feedback">SEBI was founded in 1988 and became a statutory body with full regulatory powers in 1992 after the Harshad Mehta scam.</div>
+    </div>
+    <div class="quiz-q">
+      <p class="quiz-q-text">When the RBI cuts the repo rate, what is the PRIMARY effect on markets?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">Markets always crash</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'correct')">Borrowing becomes cheaper — generally bullish</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">Inflation immediately jumps</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,'wrong')">FIIs immediately sell Indian assets</button>
+      </div>
+      <div class="quiz-feedback">A repo rate cut makes borrowing cheaper for banks and businesses, stimulating growth and generally boosting equity markets.</div>
+    </div>
+  </div>
+
+  <button class="mark-complete-btn" onclick="markComplete('rbi', this)">✓ Mark as Complete</button>
+  <div style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);border-radius:16px;padding:28px;margin-top:32px;text-align:center;">
+    <div style="font-size:40px;margin-bottom:10px;">🎉</div>
+    <h2 style="font-size:24px;margin-bottom:8px;color:#065F46;">Course Complete!</h2>
+    <p style="color:#047857;font-size:15px;">You've covered all 20 lessons from Basic Economics to Regulatory Framework. You now have a solid foundation in stock market fundamentals.</p>
+    <button class="btn-hero btn-primary" style="background:#059669;color:white;margin-top:16px;" onclick="navigate('home')">Back to Home →</button>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="navigate('sebi')"><div class="nav-btn-label">← Previous</div><div class="nav-btn-title">SEBI</div></button>
+    <button class="nav-btn next-btn" onclick="navigate('home')"><div class="nav-btn-label">Finish →</div><div class="nav-btn-title">Home</div></button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ====================== DATA ======================
+const ALL_LESSONS = [
+  { id:'gdp', title:'Gross Domestic Product (GDP)', cat:'econ', catLabel:'Basic Economics' },
+  { id:'inflation', title:'Inflation & Consumer Price Index', cat:'econ', catLabel:'Basic Economics' },
+  { id:'interest-rates', title:'Interest Rates & RBI Monetary Policy', cat:'econ', catLabel:'Basic Economics' },
+  { id:'fiscal', title:'Fiscal Policy & Government Deficit', cat:'econ', catLabel:'Basic Economics' },
+  { id:'pmi', title:'PMI — Purchasing Managers Index', cat:'econ', catLabel:'Basic Economics' },
+  { id:'sectors', title:'Primary, Secondary & Tertiary Sectors', cat:'markets', catLabel:'Financial Markets' },
+  { id:'indices', title:'Stock Market Indices — NIFTY, SENSEX', cat:'markets', catLabel:'Financial Markets' },
+  { id:'bull-bear', title:'Bull & Bear Markets', cat:'markets', catLabel:'Financial Markets' },
+  { id:'exchanges', title:'NSE & BSE — India\'s Stock Exchanges', cat:'markets', catLabel:'Financial Markets' },
+  { id:'revenue', title:'Revenue & Earnings Growth', cat:'fund', catLabel:'Stock Fundamentals' },
+  { id:'pe-ratio', title:'Price-to-Earnings (P/E) Ratio', cat:'fund', catLabel:'Stock Fundamentals' },
+  { id:'pb-ratio', title:'Book Value & P/B Ratio', cat:'fund', catLabel:'Stock Fundamentals' },
+  { id:'de-ratio', title:'Debt-to-Equity (D/E) Ratio', cat:'fund', catLabel:'Stock Fundamentals' },
+  { id:'roe-roce', title:'Return on Equity (ROE) & ROCE', cat:'fund', catLabel:'Stock Fundamentals' },
+  { id:'cash-flow', title:'Cash Flow & Investment Analysis', cat:'fund', catLabel:'Stock Fundamentals' },
+  { id:'fii-dii', title:'FIIs & DIIs — The Market Movers', cat:'ism', catLabel:'Investment Strategies' },
+  { id:'retail-vs-inst', title:'Retail vs Institutional Investors', cat:'ism', catLabel:'Investment Strategies' },
+  { id:'ipo-fpo', title:'IPO & FPO — Public Offerings', cat:'ism', catLabel:'Investment Strategies' },
+  { id:'mutual-funds', title:'Mutual Funds & ETFs', cat:'ism', catLabel:'Investment Strategies' },
+  { id:'sebi', title:'SEBI & Market Regulation', cat:'reg', catLabel:'Regulatory Framework' },
+  { id:'rbi', title:'RBI & Monetary Policy', cat:'reg', catLabel:'Regulatory Framework' },
+];
+
+const TOTAL = ALL_LESSONS.length;
+
+// ====================== PROGRESS ======================
+let completed = JSON.parse(localStorage.getItem('sw_completed') || '[]');
+
+function updateProgress() {
+  const count = completed.length;
+  document.getElementById('progressText').textContent = count + ' / ' + TOTAL;
+  document.getElementById('miniProgressBar').style.width = (count / TOTAL * 100) + '%';
+  document.getElementById('stat-done').textContent = count;
+  
+  ALL_LESSONS.forEach(l => {
+    const link = document.querySelector(`.sidebar-link[data-page="${l.id}"]`);
+    if (link) link.classList.toggle('done', completed.includes(l.id));
+  });
+
+  // Category bars
+  const cats = ['econ','markets','fund','ism','reg'];
+  cats.forEach(cat => {
+    const catLessons = ALL_LESSONS.filter(l => l.cat === cat);
+    const done = catLessons.filter(l => completed.includes(l.id)).length;
+    document.querySelectorAll(`.cat-bar[data-cat="${cat}"]`).forEach(el => {
+      el.style.width = (done / catLessons.length * 100) + '%';
+    });
+  });
+
+  // Update mark complete buttons
+  ALL_LESSONS.forEach(l => {
+    const btn = document.querySelector(`#page-${l.id} .mark-complete-btn`);
+    if (btn && completed.includes(l.id)) {
+      btn.textContent = '✓ Completed!';
+      btn.classList.add('done');
+    }
+  });
+}
+
+function markComplete(id, btn) {
+  if (!completed.includes(id)) {
+    completed.push(id);
+    localStorage.setItem('sw_completed', JSON.stringify(completed));
+    btn.textContent = '✓ Completed!';
+    btn.classList.add('done');
+    updateProgress();
+  }
+}
+
+// ====================== NAVIGATION ======================
+let currentPage = 'home';
+
+function navigate(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + pageId);
+  if (target) {
+    target.classList.add('active');
+    currentPage = pageId;
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('.sidebar-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.page === pageId);
+  });
+  closeSidebar();
+}
+
+// ====================== SIDEBAR TOGGLE ======================
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('active');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('active');
+}
+function toggleCat(btn) {
+  btn.classList.toggle('open');
+  const links = btn.nextElementSibling;
+  links.classList.toggle('open');
+}
+
+// ====================== THEME ======================
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+  document.getElementById('themeLabel').textContent = isDark ? 'Dark' : 'Light';
+  localStorage.setItem('sw_theme', isDark ? 'light' : 'dark');
+}
+
+// ====================== CALCULATORS ======================
+function calcPE() {
+  const price = parseFloat(document.getElementById('pe-price').value);
+  const eps = parseFloat(document.getElementById('pe-eps').value);
+  if (!price || !eps || eps <= 0) { alert('Please enter valid values.'); return; }
+  const pe = (price / eps).toFixed(2);
+  let interp = '';
+  if (pe < 10) interp = '⚠️ Very low — check for value trap';
+  else if (pe < 20) interp = '✅ Fairly valued for stable sectors';
+  else if (pe < 35) interp = '📈 Growth premium — expect high growth';
+  else if (pe < 60) interp = '⚡ High growth priced in — buy carefully';
+  else interp = '🚨 Speculative — very high growth expectations';
+  const el = document.getElementById('pe-result');
+  el.classList.add('visible');
+  document.getElementById('pe-value').textContent = pe + 'x';
+  document.getElementById('pe-interpret').textContent = interp;
+}
+
+function calcPB() {
+  const price = parseFloat(document.getElementById('pb-price').value);
+  const bvps = parseFloat(document.getElementById('pb-bvps').value);
+  if (!price || !bvps || bvps <= 0) { alert('Please enter valid values.'); return; }
+  const pb = (price / bvps).toFixed(2);
+  let interp = '';
+  if (pb < 1) interp = '💎 Below book value — possible undervaluation';
+  else if (pb < 2) interp = '✅ Fairly valued — near book value';
+  else if (pb < 5) interp = '📈 Growth premium — justified by high ROE';
+  else interp = '🚀 High premium — strong intangibles or speculation';
+  const el = document.getElementById('pb-result');
+  el.classList.add('visible');
+  document.getElementById('pb-value').textContent = pb + 'x';
+  document.getElementById('pb-interpret').textContent = interp;
+}
+
+function calcDE() {
+  const debt = parseFloat(document.getElementById('de-debt').value);
+  const equity = parseFloat(document.getElementById('de-equity').value);
+  if (isNaN(debt) || !equity || equity <= 0) { alert('Please enter valid values.'); return; }
+  const de = (debt / equity).toFixed(2);
+  let interp = '';
+  if (de == 0) interp = '🏆 Debt-free — very low financial risk';
+  else if (de < 0.5) interp = '✅ Conservatively funded — excellent';
+  else if (de < 1.0) interp = '👍 Moderate — manageable debt levels';
+  else if (de < 2.0) interp = '⚠️ High debt — monitor interest coverage';
+  else interp = '🚨 Very high debt — significant financial risk';
+  const el = document.getElementById('de-result');
+  el.classList.add('visible');
+  document.getElementById('de-value').textContent = de + 'x';
+  document.getElementById('de-interpret').textContent = interp;
+}
+
+// ====================== QUIZ ======================
+function checkQuiz(btn, result) {
+  const group = btn.closest('.quiz-q');
+  if (group.querySelector('.quiz-opt.correct') || group.querySelector('.quiz-opt.wrong')) return;
+  btn.classList.add(result);
+  if (result === 'wrong') {
+    group.querySelector('.quiz-opt[onclick*="correct"]').classList.add('correct');
+  }
+  const fb = group.querySelector('.quiz-feedback');
+  fb.classList.add('show');
+  fb.classList.add(result === 'correct' ? 'correct-fb' : 'wrong-fb');
+  fb.textContent = (result === 'correct' ? '✅ Correct! ' : '❌ Incorrect. ') + fb.textContent;
+}
+
+// ====================== SEARCH ======================
+function doSearch(query) {
+  const box = document.getElementById('searchResults');
+  if (!query.trim()) { box.classList.remove('active'); return; }
+  const q = query.toLowerCase();
+  const results = ALL_LESSONS.filter(l => 
+    l.title.toLowerCase().includes(q) || l.catLabel.toLowerCase().includes(q)
+  ).slice(0, 6);
+  
+  if (results.length === 0) {
+    box.innerHTML = '<div class="search-result-item"><div class="sr-title">No results found</div></div>';
+  } else {
+    box.innerHTML = results.map(r => `
+      <div class="search-result-item" onclick="navigate('${r.id}');document.getElementById('searchInput').value='';document.getElementById('searchResults').classList.remove('active');">
+        <div class="sr-title">${r.title}</div>
+        <div class="sr-cat">${r.catLabel}</div>
+      </div>`).join('');
+  }
+  box.classList.add('active');
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.search-bar')) {
+    document.getElementById('searchResults').classList.remove('active');
+  }
+});
+
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { this.value = ''; document.getElementById('searchResults').classList.remove('active'); }
+});
+
+// ====================== INIT ======================
+(function init() {
+  const savedTheme = localStorage.getItem('sw_theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'dark') {
+      document.getElementById('themeIcon').textContent = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light';
+    }
+  }
+  updateProgress();
+  // Open first sidebar category
+  document.querySelector('.sidebar-cat-btn').classList.add('open');
+  document.querySelector('.sidebar-links').classList.add('open');
+})();
+</script>
+</body>
+</html>
